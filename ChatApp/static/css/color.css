@@ -1,0 +1,18 @@
+:root {
+	/* primary color */
+	--color-primary: #8BA84B;
+	/* main text */
+	--color-text-primary: #333333;
+	/* secondary text */
+	--color-text-secondary: #71717A;
+	/* form border */
+	--color-form-border: #D4D4D8;
+	/* form background */
+	--color-form-bg: #ffffff;
+	/* error color */
+	--color-error: #EF4444;
+	/* main background */
+	--color-bg-main: #F2F1EF;
+	/* overlay background */
+	--color-bg-overlay: rgba(0, 0, 0, 0.1);
+}

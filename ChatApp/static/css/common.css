@@ -18,6 +18,10 @@ body {
 	font-family: "Noto Sans JP", sans-serif;
 }
 
+.bg-main {
+	background-color: var(--color-bg-main);
+}
+
 .submit-btn {
 	width: 100%;
 	padding: 10px 16px;

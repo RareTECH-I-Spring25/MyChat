@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>保護者ダッシュボード</title>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard bg-main">
+	<div class="dashboard__wrap">
+		{% include 'header.html' %}
+
+		<!-- ユーザーグリーティング -->
+		<div class="dashboard__greeting">
+			<p class="dashboard__greeting-text">こんにちは、山田太郎さん</p>
+		</div>
+
+		<!-- 子どもアカウント追加ボタン -->
+		<div class="dashboard__action">
+			<a class="dashboard__add-child hover" href="{{url_for('add_child')}}">
+				<span class="dashboard__add-icon">+</span>
+				子どもアカウント追加
+			</a>
+		</div>
+
+		<!-- 子どもアカウントリスト -->
+		<div class="dashboard__children">
+			<!-- 子どもアカウント1 -->
+			<div class="child-card">
+				<div class="child-card__grouper">
+					<div class="child-card__group">
+						<h2 class="child-card__name">山田はな</h2>
+						<p class="child-card__status">使用可能</p>
+					</div>
+					<button class="child-card__menu">⋯</button>
+				</div>
+				<div class="child-card__content">
+					<div class="child-card__section">
+						<form action="{{ url_for('update_child_time') }}" method="POST" class="child-card__time-form">
+							<div class="child-card__update-container">
+								<input type="hidden" name="child_id" value="1">
+								<input type="hidden" name="status" value="deactive">
+								<button class="child-card__update submit-btn submit-btn--disable submit-btn--slim hover">使用停止にする</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- 子どもアカウント2 -->
+			<div class="child-card">
+				<div class="child-card__grouper">
+					<div class="child-card__group">
+						<h2 class="child-card__name">山田けん</h2>
+						<p class="child-card__status child-card__status--disable">使用可能</p>
+					</div>
+					<button class="child-card__menu">⋯</button>
+				</div>
+				<div class="child-card__content">
+					<div class="child-card__section">
+						<form action="{{ url_for('update_child_time') }}" method="POST" class="child-card__time-form">
+							<div class="child-card__update-container">
+								<input type="hidden" name="child_id" value="2">
+								<input type="hidden" name="status" value="active">
+								<button class="child-card__update submit-btn submit-btn--slim hover">使用停止にする</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>
+{% endblock %}

@@ -16,10 +16,51 @@ input::placeholder {
 body {
 	color: var(--color-text-primary);
 	font-family: "Noto Sans JP", sans-serif;
+	height: 100dvh;
 }
 
 .bg-main {
 	background-color: var(--color-bg-main);
+}
+
+/* ヘッダー */
+.header {
+	background-color: #fff;
+	border-radius: 12px;
+	padding: 18px 16px;
+	border-radius: 12px;
+	box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.header-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.header__logo {
+	font-size: 24px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
+
+.header__logut {
+	color: var(--color-primary);
+	text-decoration: none;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+	transition: all 0.3s;
+}
+
+.lheader__logut-icon {
+	width: 24px;
 }
 
 .submit-btn {
@@ -35,4 +76,15 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.submit-btn--disable {
+	color: #EF4444;
+	border-radius: 4px;
+	border: 1px solid #EF4444;
+	background: var(--pink01, #FFF);
+}
+
+.submit-btn--slim {
+	padding: 4px 16px;
 }

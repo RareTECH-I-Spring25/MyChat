@@ -1,44 +1,64 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
 
-# デバッグログの設定
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+app.secret_key = 'secret_key' 
 
-@app.route('/')
-def hello():
-    return "Hello"
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        user_type = request.form.get('user_type')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        print(f"ログイン試行: ユーザー種別={user_type}, メールアドレス={email}, パスワード={password}")
+        
+        if not email or not password:
+            flash('メールアドレスとパスワードを入力してください')
+            return redirect(url_for('login'))
+            
+    return render_template('auth/login.html')
 
+@app.route('/signup/parent', methods=['GET', 'POST'])
+def signup_parent():
+    email = ''
+    parent_user_name = ''
+    
+    if request.method == 'POST':
+        email = request.form.get('email')
+        parent_user_name = request.form.get('parent_user_name')
+        password = request.form.get('password')
+        password_confirmation = request.form.get('password_confirmation')
+        print(f"ログイン試行: メールアドレス={email}, ユーザー名={parent_user_name}, パスワード={password}, パスワード（確認用）={password_confirmation}")
+        
+        if not email or not password:
+            flash('メールアドレスとパスワードを入力してください')
+            return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
+        
+    return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
 
-posts = {
-    1:"post-1",
-    2:"post-2",
-    3:"post-3"
-}
+@app.route('/logout', methods=['POST'])
+def logout():
+    flash('ログアウトしました')
+    return redirect(url_for('login'))
 
-@app.route('/post/<int:post_id>/<post_name>')
-def show_post(post_id, post_name):
-    post = posts[post_id]
-    return f"{post} {post_name}"
+@app.route('/parent/dashbord',methods=['GET'])
+def parent_dashbord():
+    return render_template('parent/home.html')
 
-@app.route('/hello/<string:user_name01>/<string:user_name02>')
-def hekko(user_name01, user_name02):
-    return f"こんにちは {user_name01}さん {user_name02}さん"
+@app.route('/parent/child/add',methods=['GET','POST'])
+def add_child():
+    return render_template('parent/child/add.html')
 
-@app.route('/add/<int:num1>/<int:num2>')
-def add(num1, num2):
-    return f"{num1} + {num2} = {num1 + num2}"
+@app.route('/parent/child/time/', methods=['POST'])
+def update_child_time():
+    child_id = request.form.get('child_id')
+    status = request.form.get('status')
+    print(f"子どもID={child_id}, status={status}")
+    return render_template('parent/home.html')
 
-@app.route('/div/<float:num1>/<float:num2>')
-def div(num1, num2):
-    return f"{num1} / {num2} = {num1 // num2}"
-
-@app.route('/user/<string:user_name>/<int:user_number>')
-def show_user(user_name, user_number):
-    user_name = user_name.upper()
-    return f"Hello {user_name} {user_number}"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

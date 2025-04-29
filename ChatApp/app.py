@@ -1,11 +1,21 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
+from flask import session
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key' 
+
+
+# ルートページのリダイレクト処理
+@app.route('/', methods=['GET'])
+def index():
+    uid = session.get('uid')
+    if uid is None:
+        return redirect(url_for('login'))
+    return redirect(url_for('parent_dashbord'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

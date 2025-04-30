@@ -5,7 +5,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.secret_key = 'secret_key' 
+app.secret_key = 'your_secret_key' 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -70,7 +70,7 @@ def delete_child():
     print(f"子どもID={child_id}")
     return redirect(url_for('parent_dashbord'))
 
-
+#実行処理
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
     #app.run(host='0.0.0.0', port=5001, debug=True)

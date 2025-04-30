@@ -41,23 +41,34 @@ def signup_parent():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    flash('ログアウトしました')
+    print(f"ログアウトしました")
     return redirect(url_for('login'))
 
-@app.route('/parent/dashbord',methods=['GET'])
-def parent_dashbord():
-    return render_template('parent/home.html')
+#以下、変数を/parent/dashbordに渡していただくとhtmlが生成されます。削除いただいて問題ないです。
+# @app.route('/parent/dashbord',methods=['GET'])
+# def parent_dashbord():
+#     children=[
+# 		{'child_id':1,'child_user_name':'山田はな','child_status':1},
+# 		{'child_id':2,'child_user_name':'山田けん','child_status':0},
+# 	]
+#     return render_template('parent/home.html',children=children)
 
 @app.route('/parent/child/add',methods=['GET','POST'])
 def add_child():
     return render_template('parent/child/add.html')
 
-@app.route('/parent/child/time/', methods=['POST'])
+@app.route('/parent/child/status/', methods=['POST'])
 def update_child_time():
     child_id = request.form.get('child_id')
-    status = request.form.get('status')
-    print(f"子どもID={child_id}, status={status}")
-    return render_template('parent/home.html')
+    child_status = request.form.get('child_status')
+    print(f"子どもID={child_id}, status={child_status}")
+    return redirect(url_for('parent_dashbord'))
+
+@app.route('/parent/child/delete/', methods=['POST'])
+def delete_child():
+    child_id = request.form.get('child_id')
+    print(f"子どもID={child_id}")
+    return redirect(url_for('parent_dashbord'))
 
 
 if __name__ == '__main__':

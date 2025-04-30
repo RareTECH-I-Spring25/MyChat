@@ -2,9 +2,9 @@
 	<div class="header-container">
 		<h1 class="header__logo">Mimott</h1>
 		<form action="{{ url_for('logout') }}" method="POST" class="header__logout-form">
-			<a href="#" class="header__logut hover">
+			<button type="submit" class="header__logut hover">
 				ログアウト<img src="{{ url_for('static',filename='img/icon_logout.webp') }}" alt="ログアウトボタン" class="lheader__logut-icon">
-			</a>
+			</button>
 		</form>
 	</div>
 </header>

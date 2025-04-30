@@ -65,17 +65,35 @@ def parent_dashboard():
         return redirect(url_for('login'))
     return render_template('parent/home.html')
 
+#サンプルソースです。childrenをフロントへ渡していただくと子供リストが生成されます。削除いただいて大丈夫です。 by fuku
+# @app.route('/parent/dashbord',methods=['GET'])
+# def parent_dashbord():
+#     children=[
+# 		{'child_id':1,'child_user_name':'山田はな','child_status':1},
+# 		{'child_id':2,'child_user_name':'山田けん','child_status':0},
+# 	]
+#     return render_template('parent/home.html',children=children)
+
 @app.route('/parent/child/add',methods=['GET','POST'])
 def add_child():
     return render_template('parent/child/add.html')
 
+@app.route('/parent/child/status/', methods=['POST'])
+def update_child_time():
+    child_id = request.form.get('child_id')
+    child_status = request.form.get('child_status')
+    print(f"子どもID={child_id}, status={child_status}")
+    return redirect(url_for('parent_dashbord'))
 
-
+@app.route('/parent/child/delete/', methods=['POST'])
+def delete_child():
+    child_id = request.form.get('child_id')
+    print(f"子どもID={child_id}")
+    return redirect(url_for('parent_dashbord'))
 
 @app.route('/child/dashboard',methods=['GET'])
 def child_home():
     return render_template('child/home.html')
-
 
 #実行処理
 if __name__ == '__main__':

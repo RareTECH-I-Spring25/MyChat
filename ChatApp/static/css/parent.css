@@ -11,6 +11,21 @@
 	height: 100dvh;
 }
 
+.dashboard__wrap--parent {
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+	align-items: center;
+}
+
+.dashboard__wrap--parent .header {
+	width: 100%;
+}
+
+.login__form.login__form--parent-child {
+	margin-top: 42px;
+}
+
 /* グリーティング */
 .dashboard__greeting {
 	margin-top: 40px;
@@ -166,4 +181,16 @@
 .child-card__update-container {
 	display: flex;
 	justify-content: flex-end;
+}
+
+/* 子どもアカウント追加 */
+.parent-child-add__link-wrap {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	transition: all 0.3s;
+}
+
+.parent-child-add__link {
+	transition: all 0.3s;
 }

@@ -88,3 +88,105 @@ body {
 .submit-btn--slim {
 	padding: 4px 16px;
 }
+
+/* 削除用ポップアップ */
+.delete-confirm {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(51, 51, 51, 0.80);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.delete-confirm__content {
+	background-color: white;
+	padding: 20px;
+	border-radius: 8px;
+	width: 90%;
+	max-width: 400px;
+}
+
+.delete-confirm__buttons {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.btn-cancel {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 150%;
+	/* 21px */
+	max-width: 160px;
+	width: 100%;
+	padding: 4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 4px;
+	border: 1px solid #E5E7EB;
+	transition: all 0.3s;
+}
+
+.btn-delete {
+	color: #fff;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 150%;
+	/* 21px */
+	max-width: 160px;
+	width: 100%;
+	padding: 4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 4px;
+	border: 1px solid var(--color-error);
+	background-color: var(--color-error);
+	margin-top: 12px;
+	transition: all 0.3s;
+}
+
+.delete-confirm__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+}
+
+.delete-confirm__title {
+	font-size: 18px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
+
+.delete-confirm__text {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+	margin-top: 24px;
+}
+
+.delete-confirm__close {
+	background: none;
+	border: none;
+	font-size: 20px;
+	cursor: pointer;
+	color: #999;
+	transition: all 0.3s;
+}
+
+.delete-confirm__close:hover {
+	color: #333;
+}

@@ -6,6 +6,8 @@ CREATE USER IF NOT EXISTS 'testuser'@'%' IDENTIFIED BY 'testuser';
 GRANT ALL PRIVILEGES ON chatapp.* TO 'testuser'@'%';
 FLUSH PRIVILEGES;
 
+USE chatapp;
+
 -- parentsテーブルの作成
 CREATE TABLE parents (
   parent_id INT AUTO_INCREMENT PRIMARY KEY,

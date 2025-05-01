@@ -51,13 +51,16 @@ def signup_parent():
             flash('メールアドレスとパスワードを入力してください')
             return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
         
-        # ここでDBにユーザーを登録
+        
         try:
             import uuid
             uid = str(uuid.uuid4())
             User.create(uid, parent_user_name, email, password)
             flash('アカウント登録が完了しました。ログインしてください。')
             return redirect(url_for('login'))
+        except ValueError as ve:
+            flash(str(ve))
+            return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
         except Exception as e:
             flash(f'登録に失敗しました: {e}')
             return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
@@ -77,25 +80,21 @@ def parent_dashboard():
         return redirect(url_for('login'))
     return render_template('parent/home.html')
 
-#サンプルソースです。childrenをフロントへ渡していただくと子供リストが生成されます。削除いただいて大丈夫です。 by fuku
-# @app.route('/parent/dashbord',methods=['GET'])
-# def parent_dashbord():
-#     children=[
-# 		{'child_id':1,'child_user_name':'山田はな','child_status':1},
-# 		{'child_id':2,'child_user_name':'山田けん','child_status':0},
-# 	]
-#     return render_template('parent/home.html',children=children)
 
-@app.route('/parent/child/add',methods=['GET','POST'])
-def add_child():
-    return render_template('parent/child/add.html')
-
-@app.route('/parent/child/status/', methods=['POST'])
+#仮実装です
+@app.route('/parent/update_child_time', methods=['POST'])
 def update_child_time():
     child_id = request.form.get('child_id')
-    child_status = request.form.get('child_status')
-    print(f"子どもID={child_id}, status={child_status}")
-    return redirect(url_for('parent_dashbord'))
+    status = request.form.get('status')
+    flash('子どもアカウントの状態を更新しました')
+    return redirect(url_for('parent_dashboard'))
+
+
+#仮実装です
+@app.route('/parent/add_child', methods=['GET', 'POST'])
+def add_child():
+    return render_template('parent/add_child.html')
+
 
 @app.route('/parent/child/delete/', methods=['POST'])
 def delete_child():

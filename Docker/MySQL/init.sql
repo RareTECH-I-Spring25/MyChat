@@ -1,36 +1,72 @@
-DROP DATABASE IF EXISTS mychat;
-DROP USER IF EXISTS 'testuser';
+DROP DATABASE IF EXISTS chatapp;
+DROP USER IF EXISTS 'testuser'@'%';
 
-CREATE USER 'testuser' IDENTIFIED BY 'testuser';
-CREATE DATABASE mychat;
-USE mychat;
-GRANT ALL PRIVILEGES ON mychat.* TO 'testuser';
+CREATE DATABASE IF NOT EXISTS chatapp DEFAULT CHARACTER SET utf8mb4;
+CREATE USER IF NOT EXISTS 'testuser'@'%' IDENTIFIED BY 'testuser';
+GRANT ALL PRIVILEGES ON chatapp.* TO 'testuser'@'%';
+FLUSH PRIVILEGES;
 
-CREATE TABLE users (
-    uid VARCHAR(255) PRIMARY KEY,
-    user_name VARCHAR(255) UNIQUE NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+USE chatapp;
+
+-- parentsテーブルの作成
+CREATE TABLE parents (
+  parent_id INT AUTO_INCREMENT PRIMARY KEY,
+  parent_user_name VARCHAR(255) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  create_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- childrenテーブルの作成
+CREATE TABLE children (
+  child_id INT AUTO_INCREMENT PRIMARY KEY,
+  child_user_name VARCHAR(255) UNIQUE NOT NULL,
+  child_email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  friend_child_user_id VARCHAR(255) UNIQUE NOT NULL,
+  create_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  parent_id INT NOT NULL,
+  child_status INT DEFAULT 0 CHECK(child_status IN (0, 1)),
+  FOREIGN KEY(parent_id) REFERENCES parents(parent_id) ON DELETE CASCADE
+);
+
+CREATE TABLE friends (
+  friend_id INT AUTO_INCREMENT PRIMARY KEY,
+  child_id INT NOT NULL,
+  friend_child_user_id VARCHAR(255) NOT NULL,
+  FOREIGN KEY (child_id) REFERENCES children(child_id) ON DELETE CASCADE,
+  FOREIGN KEY (friend_child_user_id) REFERENCES children(friend_child_user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE channels (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    uid VARCHAR(255) NOT NULL,
-    name VARCHAR(255) UNIQUE NOT NULL,
-    abstract VARCHAR(255),
-    FOREIGN KEY (uid) REFERENCES users(uid) ON DELETE CASCADE
+  channel_id INT AUTO_INCREMENT PRIMARY KEY,
+  channel_name VARCHAR(255) NOT NULL,
+  created_by INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY(created_by) REFERENCES children(child_id) ON DELETE CASCADE
+);
+
+CREATE TABLE member_tables (
+  child_id INT NOT NULL,
+  channel_id INT NOT NULL,
+  unique_id INT AUTO_INCREMENT PRIMARY KEY,
+  create_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (child_id) REFERENCES children(child_id) ON DELETE CASCADE,
+  FOREIGN KEY(channel_id) REFERENCES channels(channel_id) ON DELETE CASCADE
 );
 
 CREATE TABLE messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    uid VARCHAR(255) NOT NULL,
-    cid INT NOT NULL,
-    message TEXT,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (uid) REFERENCES users(uid) ON DELETE CASCADE,
-    FOREIGN KEY (cid) REFERENCES channels(id) ON DELETE CASCADE
+  message_id INT AUTO_INCREMENT PRIMARY KEY,
+  child_id INT NOT NULL,
+  message_content text NOT NULL,
+  send_date TIMESTAMP,
+  channel_id INT NOT NULL,
+  create_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY(child_id) REFERENCES children(child_id) ON DELETE CASCADE,
+  FOREIGN KEY(channel_id) REFERENCES channels(channel_id) ON DELETE CASCADE
 );
-
-INSERT INTO users(uid, user_name, email, password) VALUES('970af84c-dd40-47ff-af23-282b72b7cca8','テスト','test@gmail.com','37268335dd6931045bdcdf92623ff819a64244b53d0e746d438797349d4da578');
-INSERT INTO channels(id, uid, name, abstract) VALUES(1, '970af84c-dd40-47ff-af23-282b72b7cca8','ぼっち部屋','テストさんの孤独な部屋です');
-INSERT INTO messages(id, uid, cid, message) VALUES(1, '970af84c-dd40-47ff-af23-282b72b7cca8', '1', '誰かかまってください、、');

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>保護者ダッシュボード</title>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard bg-main">
+	<div class="dashboard__wrap">
+		{% include 'header.html' %}
+
+		<!-- ユーザーグリーティング -->
+		<div class="dashboard__greeting">
+			<p class="dashboard__greeting-text">こんにちは{{parent.parent_user_name}}さん</p>
+		</div>
+
+		<!-- 子どもアカウント追加ボタン -->
+		<div class="dashboard__action">
+			<a class="dashboard__add-child hover" href="{{url_for('add_child')}}">
+				<span class="dashboard__add-icon">+</span>
+				子どもアカウント追加
+			</a>
+		</div>
+
+		<!-- 子どもアカウントリスト -->
+		<ul class="dashboard__children">
+			{% for child in children %}
+			<!-- 子どもアカウント1 -->
+			<li class="child-card">
+				<div class="child-card__grouper">
+					<div class="child-card__group">
+						<h2 class="child-card__name">{{child.child_user_name}}</h2>
+						{% if child.child_status == 1 %}
+							<p class="child-card__status">
+						{% else %}
+							<p class="child-card__status child-card__status--disable">
+						{% endif %}
+							{% if child.child_status == 1 %}
+							使用可能
+							{% else %}
+							使用不可
+							{% endif %}
+						</p>
+					</div>
+					<button class="child-card__menu" onclick="showDeleteConfirm({{child.child_status}})">⋯</button>
+				</div>
+				<div class="child-card__content">
+					<div class="child-card__section">
+						<form action="{{ url_for('update_child_time') }}" method="POST" class="child-card__time-form">
+							<div class="child-card__update-container">
+								<input type="hidden" name="child_id" value="{{child.child_id}}">
+								<input type="hidden" name="child_status" value="{% if child.child_status == 0 %}1{% else %}0{% endif %}">
+								<button class="child-card__update submit-btn {% if child.child_status == 1 %}submit-btn--disable{% endif %} submit-btn--slim hover">
+									{% if child.child_status == 1 %}
+									使用停止にする
+									{% else %}
+									使用可能にする
+									{% endif %}
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</li>
+			{% endfor %}
+		</ul>
+		
+		<!-- 　削除の確認用ポップアップ -->
+		<div id="deleteConfirm" style="display: none;" class="delete-confirm">
+			<div class="delete-confirm__content">
+			<div class="delete-confirm__header">
+				<p class="delete-confirm__title">子のアカウントを削除</p>
+				<button type="button" class="delete-confirm__close" onclick="hideDeleteConfirm()">×</button>
+			</div>
+			<p  class="delete-confirm__text">リストから削除しますか？削除すると、チャット履歴も削除されます。</p>
+			
+			<form id="deleteForm" action="{{url_for('delete_child')}}" method="POST">
+				<input type="hidden" id="deleteChildId" name="child_id" value="">
+				<div class="delete-confirm__buttons">
+					<button type="button" onclick="hideDeleteConfirm()" class="btn-cancel hover">キャンセル</button>
+					<button type="submit" class="btn-delete hover">削除</button>
+				</div>
+			</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

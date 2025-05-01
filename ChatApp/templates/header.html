@@ -1,0 +1,11 @@
+<header class="header bg-main">
+	<div class="header-container">
+		<h1 class="header__logo">Mimott</h1>
+		<form action="{{ url_for('logout') }}" method="POST" class="header__logout-form">
+
+			<button type="submit" class="header__logut hover">
+				ログアウト<img src="{{ url_for('static',filename='img/icon_logout.webp') }}" alt="ログアウトボタン" class="lheader__logut-icon">
+			</button>
+		</form>
+	</div>
+</header>

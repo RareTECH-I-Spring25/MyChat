@@ -14,11 +14,14 @@ class User:
        conn = db_pool.get_conn()
        try:
            with conn.cursor() as cur:
-               sql = "INSERT INTO users (uid, user_name, email, password) VALUES (%s, %s, %s, %s);"
-               cur.execute(sql, (uid, name, email, password,))
+               sql = "INSERT INTO parents (parent_user_name, email, password) VALUES (%s, %s, %s);"
+               cur.execute(sql, (name, email, password,))
                conn.commit()
        except pymysql.Error as e:
            print(f'エラーが発生しています：{e}')
+           if hasattr(e, 'args') and len(e.args) > 0 and e.args[0] == 1062:
+               # 重複エラー
+               raise ValueError('このメールアドレスは既に登録されています')
            abort(500)
        finally:
            db_pool.release(conn)
@@ -29,7 +32,7 @@ class User:
        conn = db_pool.get_conn()
        try:
                with conn.cursor() as cur:
-                   sql = "SELECT * FROM users WHERE email=%s;"
+                   sql = "SELECT * FROM parents WHERE email=%s;"
                    cur.execute(sql, (email,))
                    user = cur.fetchone()
                return user

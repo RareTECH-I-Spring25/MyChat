@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
 from flask import session
-from models import db_pool, User
+from models import db_pool, User, Child
 import sys
 
 logging.basicConfig(level=logging.DEBUG)
@@ -61,8 +61,8 @@ def login():
             session['user_type'] = user_type
             return redirect(url_for('parent_dashboard'))
         elif user_type == 'child':
-            flash('子どもユーザーのログインは未実装です')
-            return render_template('auth/login.html', email=email, user_type=user_type)
+            # 子どもユーザーのログイン時の処理（仮実装→リダイレクト）
+            return redirect(url_for('child_home'))
     return render_template('auth/login.html')
 
 @app.route('/signup/parent', methods=['GET', 'POST'])
@@ -159,16 +159,50 @@ def parent_dashboard():
 
 @app.route('/parent/child/add',methods=['GET','POST'])
 def add_child():
-	if request.method == 'POST':
-		identification_id = request.form.get('identification_id')
-		child_user_name = request.form.get('child_user_name')
-		email = request.form.get('email')
-		password = request.form.get('password')
-		password_confirmation = request.form.get('password_confirmation')
-		print(f"ログイン試行: identification_id={identification_id}, child_user_name={child_user_name}, email={email}, password={password}, password_confirmation={password_confirmation}")
-		return render_template('parent/child/add.html',identification_id=identification_id,child_user_name=child_user_name,email=email)
+    if request.method == 'POST':
+        identification_id = request.form.get('identification_id')
+        child_user_name = request.form.get('child_user_name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        password_confirmation = request.form.get('password_confirmation')
+        errors = []
 
-	return render_template('parent/child/add.html')
+        # バリデーション
+        if not child_user_name:
+            errors.append("子どもの名前は必須です")
+        if not email:
+            errors.append("メールアドレスは必須です")
+        if not password or not password_confirmation:
+            errors.append("パスワードは必須です")
+        if password != password_confirmation:
+            errors.append("パスワードが一致しません")
+
+        if errors:
+            for error in errors:
+                flash(error)
+            return render_template('parent/child/add.html', identification_id=identification_id, child_user_name=child_user_name, email=email)
+
+        # パスワードハッシュ化
+        from werkzeug.security import generate_password_hash
+        hashed_password = generate_password_hash(password)
+
+        # friend_child_user_idの生成（identification_idがなければuuid）
+        import uuid
+        friend_child_user_id = identification_id or str(uuid.uuid4())
+
+        # 親ID取得
+        parent_id = session.get('uid')
+
+        # DB保存
+        try:
+            Child.create(child_user_name, email, hashed_password, friend_child_user_id, parent_id)
+            flash('子どもアカウントを追加しました')
+            return redirect(url_for('parent_dashboard'))
+        except Exception as e:
+            flash(f'登録に失敗しました: {e}')
+            return render_template('parent/child/add.html', identification_id=identification_id, child_user_name=child_user_name, email=email)
+
+    return render_template('parent/child/add.html')
 
 @app.route('/parent/child/status/', methods=['POST'])
 def update_child_time():
@@ -181,7 +215,7 @@ def update_child_time():
 def delete_child():
     child_id = request.form.get('child_id')
     print(f"子どもID={child_id}")
-    return redirect(url_for('parent_dashbord'))
+    return redirect(url_for('parent_dashboard'))
 
 @app.route('/child/dashboard',methods=['GET'])
 def child_home():

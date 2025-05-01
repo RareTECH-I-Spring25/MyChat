@@ -1,6 +1,0 @@
-Flask==2.3.3
-Flask-WTF
-flask-sqlalchemy
-flask-login
-Werkzeug
-PyMySQL

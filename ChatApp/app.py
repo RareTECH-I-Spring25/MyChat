@@ -150,11 +150,15 @@ def add_child():
     return render_template('parent/add_child.html')
 
 
+@app.route('/parent/child/delete/', methods=['POST'])
+def delete_child():
+    child_id = request.form.get('child_id')
+    print(f"子どもID={child_id}")
+    return redirect(url_for('parent_dashbord'))
 
 @app.route('/child/dashboard',methods=['GET'])
 def child_home():
     return render_template('child/home.html')
-
 
 #実行処理
 if __name__ == '__main__':

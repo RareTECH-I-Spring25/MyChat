@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
 from flask import session
-from models import db_pool
+from models import db_pool, User
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -46,10 +46,20 @@ def signup_parent():
         password = request.form.get('password')
         password_confirmation = request.form.get('password_confirmation')
         user_type = request.form.get('user_type')
-        print(f"ログイン試行: ユーザー種別={user_type}, メールアドレス={email}, パスワード={password}")
         
         if not email or not password:
             flash('メールアドレスとパスワードを入力してください')
+            return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
+        
+        # ここでDBにユーザーを登録
+        try:
+            import uuid
+            uid = str(uuid.uuid4())
+            User.create(uid, parent_user_name, email, password)
+            flash('アカウント登録が完了しました。ログインしてください。')
+            return redirect(url_for('login'))
+        except Exception as e:
+            flash(f'登録に失敗しました: {e}')
             return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
         
     return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)

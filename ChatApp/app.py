@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
 from flask import session
+from models import db_pool
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key' 
+
 
 @app.route("/")
 def index():

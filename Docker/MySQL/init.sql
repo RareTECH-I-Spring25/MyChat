@@ -12,15 +12,15 @@ USE test;
 GRANT ALL PRIVILEGES ON test.* TO "testuser";
 
 --Parentsテーブルの作成
-CREATE TABLE Parents (
+CREATE TABLE parents (
 --parent_idをint型　AUTO_INCREMENTで連番　主キー
 parent_id INT AUTO_INCREMENT PRIMARY KEY,
 --parent_user_name VARCHAR(255)　ユニークキーとして設定し他のユーザーと被らないように　NOT NULLでNULLができないように
-parent_user_name VARCHAR(255) UNIQUE NOT NULL,
---email VARCHAR(255)　ユニークキーとして設定し他のユーザーと被らないように　NOT NULLでNULLができないように
-email VARCHAR(255) UNIQUE NOT NULL,
+parent_user_name VARCHAR(255)  NOT NULL,
+--parent_email VARCHAR(255)　ユニークキーとして設定し他のユーザーと被らないように　NOT NULLでNULLができないように
+parent_email VARCHAR(255) UNIQUE NOT NULL,
 --password VARCHAR(255)　
-password VARCHAR(255) NOT NULL,
+parent_password VARCHAR(255) NOT NULL,
 --作成日
 create_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
 --update_at ON UPDATEで新しく取得した現在の日時を返す
@@ -28,15 +28,15 @@ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 --childrenテーブルの作成
-CREATE TABLE Children (
+CREATE TABLE children (
 --child_id INT型　AUTO_INCREMENTで連番　主キー
 child_id INT AUTO_INCREMENT PRIMARY KEY,
 --child_user_name VARCHAR型 UNIQUEに設定　NOT NULL
-child_user_name VARCHAR(255) UNIQUE NOT NULL,
+child_user_name VARCHAR(255) NOT NULL,
 --child_email VARCHAR型　UNIQUEに設定 NOT NULL
 child_email VARCHAR(255) UNIQUE NOT NULL,
 --password VARCHAR型　NOT NULL
-password VARCHAR(255) NOT NULL,
+child_password VARCHAR(255) NOT NULL,
 --friend_child_user_id VARCHAR型　UNIQUEに設定　NOT NULL
 friend_child_user_id VARCHAR(255) UNIQUE NOT NULL,
 --作成日
@@ -51,7 +51,7 @@ child_status INT DEFAULT 0 CHECK(child_status IN (0, 1)),
 FOREIGN KEY(parent_id) REFERENCES parent_users(parent_id) ON DELETE CASCADE
 );
 
-CREATE TABLE Friends (
+CREATE TABLE friends (
 --unique_id INT型　主キー
 friend_id INT AUTO_INCREMENT PRIMARY KEY,
 --child_id INT型 NOT NULL 外部キー
@@ -62,7 +62,7 @@ FOREIGN KEY (child_id) REFERENCES Children(child_id) ON DELETE CASCADE,
 FOREIGN KEY (friend_child_user_id) REFERENCES Children(friend_child_user_id) ON DELETE CASCADE
 );
 
-CREATE Channels(
+CREATE channels(
 --channel_id INT型　主キー
 channel_id INT AUTO_INCREMENT PRIMARY KEY,
 --channel_name VARCHAR型　NOT NULL
@@ -76,22 +76,7 @@ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 FOREIGN KEY(created_by) REFERENCES Child_users(child_id) ON DELETE CASCADE,  
 );
 
-CREATE Member_tables(
---child_id INT型 NOT NULL 外部キー DELETE CASCADE必要？
-child_id INT NOT NULL,
---channel_id INT型 NOT NULL 外部キー
-channel_id INT NOT NULL,
---unique_id INT型　主キー
-unique_id INT AUTO_INCREMENT PRIMARY KEY,
---create_at TIMESTAMP型　
-create_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
---update_at ON UPDATEで新しく取得した現在の日時を返す
-updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-FOREIGN KEY (child_id) REFERENCES Child_users(child_id) ON DELETE CASCADE,
-FOREIGN KEY(channel_id) REFERENCES Channel_tables(channel_id) ON DELETE CASCADE,
-);
-
-CREATE Messages(
+CREATE messages(
 message_id INT AUTO_INCREMENT PRIMARY KEY,
 child_id INT NOT NULL,
 message_content text NOT NULL,

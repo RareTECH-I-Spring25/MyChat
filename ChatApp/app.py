@@ -78,7 +78,19 @@ def parent_dashboard():
     if 'uid' not in session or session.get('user_type') != 'parent':
         flash('ログインしてください')
         return redirect(url_for('login'))
-    return render_template('parent/home.html')
+
+    # 仮のデータを設定（後でデータベースから取得する実装に変更する）
+    parent = {
+        'parent_id': 1,
+        'parent_user_name': '山田太郎'
+    }
+    
+    children = [
+        {'child_id': 1, 'child_user_name': '山田はな', 'child_status': 1},
+        {'child_id': 2, 'child_user_name': '山田けん', 'child_status': 0}
+    ]
+    
+    return render_template('parent/home.html', parent=parent, children=children)
 
 
 #サンプルソースです。childrenをフロントへ渡していただくと子供リストが生成されます。削除いただいて大丈夫です。 by fuku

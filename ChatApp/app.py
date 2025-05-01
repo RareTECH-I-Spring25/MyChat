@@ -68,15 +68,27 @@ def parent_dashboard():
 #サンプルソースです。childrenをフロントへ渡していただくと子供リストが生成されます。削除いただいて大丈夫です。 by fuku
 # @app.route('/parent/dashbord',methods=['GET'])
 # def parent_dashbord():
+#     parent=[
+# 		{'parent_id':1,'parent_user_name':'山田太郎'}
+# 	]
 #     children=[
 # 		{'child_id':1,'child_user_name':'山田はな','child_status':1},
 # 		{'child_id':2,'child_user_name':'山田けん','child_status':0},
 # 	]
-#     return render_template('parent/home.html',children=children)
+#     return render_template('parent/home.html',parent=parent[0],children=children)
 
 @app.route('/parent/child/add',methods=['GET','POST'])
 def add_child():
-    return render_template('parent/child/add.html')
+	if request.method == 'POST':
+		identification_id = request.form.get('identification_id')
+		child_user_name = request.form.get('child_user_name')
+		email = request.form.get('email')
+		password = request.form.get('password')
+		password_confirmation = request.form.get('password_confirmation')
+		print(f"ログイン試行: identification_id={identification_id}, child_user_name={child_user_name}, email={email}, password={password}, password_confirmation={password_confirmation}")
+		return render_template('parent/child/add.html',identification_id=identification_id,child_user_name=child_user_name,email=email)
+
+	return render_template('parent/child/add.html')
 
 @app.route('/parent/child/status/', methods=['POST'])
 def update_child_time():

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>保護者ダッシュボード</title>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard bg-main parent-child-add">
+	<div class="dashboard__wrap dashboard__wrap--parent">
+		{% include 'header.html' %}
+
+		<div class="login__container login__container--parent">
+			<div class="parent-child-add__link-wrap">
+				<a class="parent-child-add__link hover" href="{{url_for('parent_dashbord')}}">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+						<path d="M10 19L3 12M3 12L10 5M3 12H21" stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					  </svg>
+				</a>
+				<span class="dashboard__greeting-text">子どもアカウント追加</span>
+			</div>
+			<form class="login__form login__form--parent-child" action="{{url_for('add_child')}}" method="post">
+				<div class="login__form-group">
+					<label for="identification_id" class="login__label">任意のID</label>
+					<input type="test" id="identification_id" name="identification_id" class="login__input" placeholder="sample1234" value="{{ identification_id }}">
+				</div>
+				<div class="login__form-group">
+					<label for="child_user_name" class="login__label">子どもの名前</label>
+					<input type="test" id="child_user_name" name="child_user_name" class="login__input" placeholder="山田花子" value="{{ child_user_name }}">
+				</div>
+				<div class="login__form-group">
+					<label for="email" class="login__label">子どものメールアドレス</label>
+					<input type="email" id="email" name="email" class="login__input" placeholder="sample@sample.com" value="{{ email }}">
+				</div>
+				<div class="login__form-group">
+					<label for="password" class="login__label">子どものパスワード</label>
+					<input type="password" id="password" name="password" class="login__input">
+				</div>
+				<div class="login__form-group">
+					<label for="password_confirmation" class="login__label">子どものパスワード（確認用）</label>
+					<input type="password" id="password_confirmation" name="password_confirmation" class="login__input">
+				</div>
+				{% with messages = get_flashed_messages() %}
+				{% if messages %}
+				<div class="flash-messages">
+					{% for message in messages %}
+					<div class="flash-message">
+						{{ message }}
+					</div>
+					{% endfor %}
+				</div>
+				{% endif %}
+				{% endwith %}
+				<button type="submit" class="login__submit-btn submit-btn hover">登録</button>
+			</form>	
+		</div>
+	</div>
+</div>
+{% endblock %}

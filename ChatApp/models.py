@@ -19,6 +19,9 @@ class User:
                conn.commit()
        except pymysql.Error as e:
            print(f'エラーが発生しています：{e}')
+           if hasattr(e, 'args') and len(e.args) > 0 and e.args[0] == 1062:
+               # 重複エラー
+               raise ValueError('このメールアドレスは既に登録されています')
            abort(500)
        finally:
            db_pool.release(conn)

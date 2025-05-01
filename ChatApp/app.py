@@ -51,13 +51,16 @@ def signup_parent():
             flash('メールアドレスとパスワードを入力してください')
             return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
         
-        # ここでDBにユーザーを登録
+        
         try:
             import uuid
             uid = str(uuid.uuid4())
             User.create(uid, parent_user_name, email, password)
             flash('アカウント登録が完了しました。ログインしてください。')
             return redirect(url_for('login'))
+        except ValueError as ve:
+            flash(str(ve))
+            return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
         except Exception as e:
             flash(f'登録に失敗しました: {e}')
             return render_template('auth/signup-parent.html', email=email, parent_user_name=parent_user_name)
@@ -77,10 +80,20 @@ def parent_dashboard():
         return redirect(url_for('login'))
     return render_template('parent/home.html')
 
-@app.route('/parent/child/add',methods=['GET','POST'])
-def add_child():
-    return render_template('parent/child/add.html')
 
+#仮実装です
+@app.route('/parent/update_child_time', methods=['POST'])
+def update_child_time():
+    child_id = request.form.get('child_id')
+    status = request.form.get('status')
+    flash('子どもアカウントの状態を更新しました')
+    return redirect(url_for('parent_dashboard'))
+
+
+#仮実装です
+@app.route('/parent/add_child', methods=['GET', 'POST'])
+def add_child():
+    return render_template('parent/add_child.html')
 
 
 

@@ -133,12 +133,10 @@ def parent_dashboard():
         flash('ログインしてください')
         return redirect(url_for('login'))
 
-    # 仮のデータを設定（後でデータベースから取得する実装に変更する）
-    parent = {
-        'parent_id': 1,
-        'parent_user_name': '山田太郎'
-    }
-    
+    # データベースから親情報を取得
+    parent = User.find_by_id(session['uid'])
+
+    # 仮の子どもリスト（ここもDBから取得する場合は修正）
     children = [
         {'child_id': 1, 'child_user_name': '山田はな', 'child_status': 1},
         {'child_id': 2, 'child_user_name': '山田けん', 'child_status': 0}

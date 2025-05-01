@@ -43,6 +43,22 @@ class User:
            db_pool.release(conn)
 
 
+   @classmethod
+   def find_by_id(cls, parent_id):
+       conn = db_pool.get_conn()
+       try:
+           with conn.cursor() as cur:
+               sql = "SELECT * FROM parents WHERE parent_id=%s;"
+               cur.execute(sql, (parent_id,))
+               user = cur.fetchone()
+           return user
+       except pymysql.Error as e:
+           print(f'エラーが発生しています：{e}')
+           abort(500)
+       finally:
+           db_pool.release(conn)
+
+
 # チャンネルクラス
 class Channel:
    @classmethod

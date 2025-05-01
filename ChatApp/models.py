@@ -14,8 +14,8 @@ class User:
        conn = db_pool.get_conn()
        try:
            with conn.cursor() as cur:
-               sql = "INSERT INTO users (uid, user_name, email, password) VALUES (%s, %s, %s, %s);"
-               cur.execute(sql, (uid, name, email, password,))
+               sql = "INSERT INTO parents (parent_user_name, email, password) VALUES (%s, %s, %s);"
+               cur.execute(sql, (name, email, password,))
                conn.commit()
        except pymysql.Error as e:
            print(f'エラーが発生しています：{e}')
@@ -29,7 +29,7 @@ class User:
        conn = db_pool.get_conn()
        try:
                with conn.cursor() as cur:
-                   sql = "SELECT * FROM users WHERE email=%s;"
+                   sql = "SELECT * FROM parents WHERE email=%s;"
                    cur.execute(sql, (email,))
                    user = cur.fetchone()
                return user

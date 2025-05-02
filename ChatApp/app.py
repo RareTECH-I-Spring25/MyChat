@@ -152,7 +152,7 @@ def parent_dashboard():
     children = Child.find_by_parent_id(session['uid'])
     return render_template('parent/home.html', parent=parent, children=children)
 
-@app.route('/parent/child/add',methods=['GET','POST'])
+@app.route('/child/add', methods=['GET', 'POST'])
 def add_child():
     import re
     if request.method == 'POST':
@@ -240,6 +240,11 @@ def child_home():
         return redirect(url_for('login'))
     child = Child.find_by_id(session['uid'])
     return render_template('child/home.html', child=child)
+
+@app.route('/child/friends/add', methods=['GET', 'POST'])
+def add_child_friends():
+    # 仮の友だち追加画面
+    return render_template('child/friends/add.html')
 
 #実行処理
 if __name__ == '__main__':

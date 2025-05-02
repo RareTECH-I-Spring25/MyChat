@@ -159,6 +159,7 @@ def parent_dashboard():
 
 @app.route('/parent/child/add',methods=['GET','POST'])
 def add_child():
+    import re
     if request.method == 'POST':
         identification_id = request.form.get('identification_id')
         child_user_name = request.form.get('child_user_name')
@@ -167,14 +168,32 @@ def add_child():
         password_confirmation = request.form.get('password_confirmation')
         errors = []
 
+        # identification_idのバリデーション
+        if not identification_id:
+            errors.append("任意のIDは必須です")
+        elif len(identification_id) < 1 or len(identification_id) > 10:
+            errors.append("任意のIDは1文字以上10文字以内で入力してください")
+
         # バリデーション
         if not child_user_name:
             errors.append("子どもの名前は必須です")
+        elif len(child_user_name) < 1 or len(child_user_name) > 10:
+            errors.append("子どもの名前は1文字以上10文字以内で入力してください")
+
         if not email:
             errors.append("メールアドレスは必須です")
-        if not password or not password_confirmation:
+        elif not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
+            errors.append("正しいメールアドレス形式で入力してください")
+
+        if not password:
             errors.append("パスワードは必須です")
-        if password != password_confirmation:
+        elif len(password) < 6:
+            errors.append("パスワードは6文字以上で入力してください")
+
+        if not password_confirmation:
+            errors.append("パスワード確認は必須です")
+
+        if password and password_confirmation and password != password_confirmation:
             errors.append("パスワードが一致しません")
 
         if errors:

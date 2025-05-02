@@ -152,19 +152,6 @@ def parent_dashboard():
     children = Child.find_by_parent_id(session['uid'])
     return render_template('parent/home.html', parent=parent, children=children)
 
-
-#サンプルソースです。childrenをフロントへ渡していただくと子供リストが生成されます。削除いただいて大丈夫です。 by fuku
-# @app.route('/parent/dashbord',methods=['GET'])
-# def parent_dashbord():
-#     parent=[
-# 		{'parent_id':1,'parent_user_name':'山田太郎'}
-# 	]
-#     children=[
-# 		{'child_id':1,'child_user_name':'山田はな','child_status':1},
-# 		{'child_id':2,'child_user_name':'山田けん','child_status':0},
-# 	]
-#     return render_template('parent/home.html',parent=parent[0],children=children)
-
 @app.route('/parent/child/add',methods=['GET','POST'])
 def add_child():
     import re

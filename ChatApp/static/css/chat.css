@@ -1,0 +1,119 @@
+.chatroom{
+    max-width: 100vw;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+.chatroom__container{
+    position: fixed;
+    display: flex;
+    max-width:480px;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--color-bg-main);
+    height: 122x;
+    padding-top: 12px;
+    z-index: 1000;
+}
+.chatroom__friend-name{
+    display: flex;
+    width: 93%;
+    max-width: 480px;
+    height: 67px;
+    margin: 11px auto ;
+    align-items: center;
+}
+.chatroom__home-button{
+    font-size: 20px;
+    font-weight: 900;
+}
+.chatroom__first-letter{
+    border-radius: 50%;
+    border: 1px solid #8BA84B;
+    color: #8BA84B;
+    background-color: #F1F4E5;
+    margin-left: 16px;
+    padding: 7px 10px;
+    font-weight: 700;
+}
+.chatroom__full-name{
+    font-weight: 700;
+    margin-left: 6px;
+}
+.chatroom__contents{
+    margin: 0 auto;
+    width: 93%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+    flex-direction: column-reverse;
+    padding-top: 110px;
+    padding-bottom: 80px;
+}
+.chatroom__contents-friend-message{
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    max-width: 70%;
+    padding: 8px 15px;
+    margin: 12px 0px;
+    border-radius: 12px;
+    word-break: break-word;
+    align-self: flex-start;
+    justify-content: flex-start;
+    align-items: center;
+}
+.chatroom__contents-my-message{
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    max-width: 70%;
+    padding: 8px 15px;
+    margin: 12px 0px;
+    border-radius: 12px;
+    word-break: break-word;
+    align-self: flex-end;
+    justify-content: flex-start;
+    align-items: center;
+    color: #FFFFFF;
+    background-color: #8BA84B;
+}
+.chatroom__contents-text{
+    font-size: 16px;
+}
+.chatroom__input-container{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 480px;
+    height: 77px;
+    display: flex;
+    background-color: #FFFFFF;
+    border-top: 1px solid #E5E7EB;
+}
+.chatroom__input-container form {
+    display: flex;
+    width: 100%;
+    max-width: 480px;         
+    align-items: center;
+    justify-content: space-between;
+}
+.chatroom__input-container textarea{
+    display: flex;
+    margin-left: 16px;
+    padding: 5px 5px;
+    width:300px;
+    height: 30px;
+    font-size: 20px;
+}
+.chatroom__input-container button{
+    display: flex;
+    margin-left: auto;
+    margin-right: 5px;
+    padding: 0px;
+    border: none;
+    background: none;
+}

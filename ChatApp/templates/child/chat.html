@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>チャット - {{ friend }}
+</title>
+{% endblock %}
+
+{% block body %}
+<div class="chatroom bg-main">
+    <div class="chatroom__container">
+        {% include 'header.html' %}
+        <div class="chatroom__friend-name">
+            <a class="chatroom__home-button" href='/child/dashboard'>←</a>
+            <span class="chatroom__first-letter">{{ friend[0] }}</span>
+            <span class="chatroom__full-name">{{ friend }}</span>
+        </div>
+    </div>
+    <div class="chatroom__contents">
+        {% for message in messages %}
+            {% if child_id == message.child_id %}
+                <div class="chatroom__contents-my-message">
+                    <p class="chatroom__contents-text">
+                        {{ message.message_content }}
+                    </p>
+                </div>
+            {% else %}
+                <div class="chatroom__contents-friend-message">
+                    <p class="chatroom__contents-text">
+                        {{ message.message_content }}
+                    </p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<div class="chatroom__input-container">
+    <form action="/child/channel/{{channel_id}}/messages" method="post">
+        <textarea name="message_content" placeholder="メッセージを入力してください" required></textarea>
+        <button type="submit"><img src="{{ url_for('static',filename='img/send-message-icon.webp') }}" alt="送信"></button>
+    </form>
+</div> 
+<!-- JavaScriptで実装
+1 ページが一番下にスクロースされた状態で画面を表示
+2 テキストエリアで改行された際にテキストエリアを上に拡張
+3 メッセージ送信が失敗した際の表示
+4 リアルタイムでの表示
+5 メッセージ件数が多い場合どうするか（上にスクロールで表示させる）
+6 スマホでキーボードを開いた際にテキストエリアをキーボードの上に（スマホでやってみると元から出来た） -->
+{% endblock %}

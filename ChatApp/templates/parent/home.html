@@ -22,6 +22,17 @@
 		</div>
 
 		<!-- 子どもアカウントリスト -->
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<div class="flash-messages">
+			{% for message in messages %}
+			<div class="flash-message">
+				{{ message }}
+			</div>
+			{% endfor %}
+		</div>
+		{% endif %}
+		{% endwith %}
 		<ul class="dashboard__children">
 			{% for child in children %}
 			<!-- 子どもアカウント1 -->
@@ -41,7 +52,7 @@
 							{% endif %}
 						</p>
 					</div>
-					<button class="child-card__menu" onclick="showDeleteConfirm({{child.child_status}})">⋯</button>
+					<button class="child-card__menu" onclick="showDeleteConfirm({{child.child_id}})">⋯</button>
 				</div>
 				<div class="child-card__content">
 					<div class="child-card__section">

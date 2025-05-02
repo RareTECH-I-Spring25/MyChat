@@ -61,7 +61,21 @@ def login():
             session['user_type'] = user_type
             return redirect(url_for('parent_dashboard'))
         elif user_type == 'child':
-            # 子どもユーザーのログイン時の処理（仮実装→リダイレクト）
+            # 子どもユーザーの認証処理
+            child = Child.find_by_email(email)
+            if not child:
+                flash('メールアドレスまたはパスワードが違います')
+                return render_template('auth/login.html', email=email, user_type=user_type)
+            hashed_password = child['password']
+            from werkzeug.security import check_password_hash
+            if not check_password_hash(hashed_password, password):
+                flash('メールアドレスまたはパスワードが違います')
+                return render_template('auth/login.html', email=email, user_type=user_type)
+            if child['child_status'] != 1:
+                flash('このアカウントは現在使用できません。保護者にご確認ください。')
+                return render_template('auth/login.html', email=email, user_type=user_type)
+            session['uid'] = child['child_id']
+            session['user_type'] = user_type
             return redirect(url_for('child_home'))
     return render_template('auth/login.html')
 
@@ -133,15 +147,9 @@ def parent_dashboard():
         flash('ログインしてください')
         return redirect(url_for('login'))
 
-    # データベースから親情報を取得
     parent = User.find_by_id(session['uid'])
-
-    # 仮の子どもリスト（ここもDBから取得する場合は修正）
-    children = [
-        {'child_id': 1, 'child_user_name': '山田はな', 'child_status': 1},
-        {'child_id': 2, 'child_user_name': '山田けん', 'child_status': 0}
-    ]
-    
+    # DBから子どもリストを取得
+    children = Child.find_by_parent_id(session['uid'])
     return render_template('parent/home.html', parent=parent, children=children)
 
 
@@ -226,7 +234,9 @@ def add_child():
 @app.route('/parent/child/status/', methods=['POST'])
 def update_child_time():
     child_id = request.form.get('child_id')
-    status = request.form.get('status')
+    status = request.form.get('child_status')
+    # DBの状態を更新
+    Child.update_status(child_id, status)
     flash('子どもアカウントの状態を更新しました')
     return redirect(url_for('parent_dashboard'))
 

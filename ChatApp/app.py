@@ -235,7 +235,11 @@ def delete_child():
 
 @app.route('/child/dashboard',methods=['GET'])
 def child_home():
-    return render_template('child/home.html')
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
+    child = Child.find_by_id(session['uid'])
+    return render_template('child/home.html', child=child)
 
 #実行処理
 if __name__ == '__main__':

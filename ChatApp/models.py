@@ -289,6 +289,20 @@ class Child:
         finally:
             db_pool.release(conn)
 
+    @classmethod
+    def delete(cls, child_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "DELETE FROM children WHERE child_id=%s;"
+                cur.execute(sql, (child_id,))
+                conn.commit()
+        except Exception as e:
+            print(f"エラー: {e}")
+            abort(500)
+        finally:
+            db_pool.release(conn)
+
 
 
     

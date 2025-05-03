@@ -230,7 +230,11 @@ def update_child_time():
 @app.route('/parent/child/delete/', methods=['POST'])
 def delete_child():
     child_id = request.form.get('child_id')
-    print(f"子どもID={child_id}")
+    if child_id:
+        Child.delete(child_id)
+        flash('子どもアカウントを削除しました')
+    else:
+        flash('子どもIDが指定されていません')
     return redirect(url_for('parent_dashboard'))
 
 

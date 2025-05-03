@@ -36,8 +36,10 @@ CREATE TABLE friends (
   friend_id INT AUTO_INCREMENT PRIMARY KEY,
   child_id INT NOT NULL,
   friend_child_user_id VARCHAR(255) NOT NULL,
+  channel_id INT,
   FOREIGN KEY (child_id) REFERENCES children(child_id) ON DELETE CASCADE,
-  FOREIGN KEY (friend_child_user_id) REFERENCES children(friend_child_user_id) ON DELETE CASCADE
+  FOREIGN KEY (friend_child_user_id) REFERENCES children(friend_child_user_id) ON DELETE CASCADE,
+  FOREIGN KEY (channel_id) REFERENCES channels(channel_id) ON DELETE CASCADE
 );
 
 CREATE TABLE channels (

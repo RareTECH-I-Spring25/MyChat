@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
 from flask import session
-from models import db_pool, User, Child, Friends
+from models import db_pool, User, Child
 import sys
 
 logging.basicConfig(level=logging.DEBUG)

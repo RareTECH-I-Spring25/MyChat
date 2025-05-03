@@ -28,7 +28,7 @@ CREATE TABLE children (
   create_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   parent_id INT NOT NULL,
-  child_status INT DEFAULT 0 CHECK(child_status IN (0, 1)),
+  child_status INT DEFAULT 1 CHECK(child_status IN (0, 1)),
   FOREIGN KEY(parent_id) REFERENCES parents(parent_id) ON DELETE CASCADE
 );
 

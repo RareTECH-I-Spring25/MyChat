@@ -61,7 +61,21 @@ def login():
             session['user_type'] = user_type
             return redirect(url_for('parent_dashboard'))
         elif user_type == 'child':
-            # 子どもユーザーのログイン時の処理（仮実装→リダイレクト）
+            # 子どもユーザーの認証処理
+            child = Child.find_by_email(email)
+            if not child:
+                flash('メールアドレスまたはパスワードが違います')
+                return render_template('auth/login.html', email=email, user_type=user_type)
+            hashed_password = child['password']
+            from werkzeug.security import check_password_hash
+            if not check_password_hash(hashed_password, password):
+                flash('メールアドレスまたはパスワードが違います')
+                return render_template('auth/login.html', email=email, user_type=user_type)
+            if child['child_status'] != 1:
+                flash('このアカウントは現在使用できません。保護者にご確認ください。')
+                return render_template('auth/login.html', email=email, user_type=user_type)
+            session['uid'] = child['child_id']
+            session['user_type'] = user_type
             return redirect(url_for('child_home'))
     return render_template('auth/login.html')
 
@@ -133,32 +147,14 @@ def parent_dashboard():
         flash('ログインしてください')
         return redirect(url_for('login'))
 
-    # データベースから親情報を取得
     parent = User.find_by_id(session['uid'])
-
-    # 仮の子どもリスト（ここもDBから取得する場合は修正）
-    children = [
-        {'child_id': 1, 'child_user_name': '山田はな', 'child_status': 1},
-        {'child_id': 2, 'child_user_name': '山田けん', 'child_status': 0}
-    ]
-    
+    # DBから子どもリストを取得
+    children = Child.find_by_parent_id(session['uid'])
     return render_template('parent/home.html', parent=parent, children=children)
 
-
-#サンプルソースです。childrenをフロントへ渡していただくと子供リストが生成されます。削除いただいて大丈夫です。 by fuku
-# @app.route('/parent/dashbord',methods=['GET'])
-# def parent_dashbord():
-#     parent=[
-# 		{'parent_id':1,'parent_user_name':'山田太郎'}
-# 	]
-#     children=[
-# 		{'child_id':1,'child_user_name':'山田はな','child_status':1},
-# 		{'child_id':2,'child_user_name':'山田けん','child_status':0},
-# 	]
-#     return render_template('parent/home.html',parent=parent[0],children=children)
-
-@app.route('/parent/child/add',methods=['GET','POST'])
+@app.route('/child/add', methods=['GET', 'POST'])
 def add_child():
+    import re
     if request.method == 'POST':
         identification_id = request.form.get('identification_id')
         child_user_name = request.form.get('child_user_name')
@@ -167,14 +163,32 @@ def add_child():
         password_confirmation = request.form.get('password_confirmation')
         errors = []
 
+        # identification_idのバリデーション
+        if not identification_id:
+            errors.append("任意のIDは必須です")
+        elif len(identification_id) < 1 or len(identification_id) > 10:
+            errors.append("任意のIDは1文字以上10文字以内で入力してください")
+
         # バリデーション
         if not child_user_name:
             errors.append("子どもの名前は必須です")
+        elif len(child_user_name) < 1 or len(child_user_name) > 10:
+            errors.append("子どもの名前は1文字以上10文字以内で入力してください")
+
         if not email:
             errors.append("メールアドレスは必須です")
-        if not password or not password_confirmation:
+        elif not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
+            errors.append("正しいメールアドレス形式で入力してください")
+
+        if not password:
             errors.append("パスワードは必須です")
-        if password != password_confirmation:
+        elif len(password) < 6:
+            errors.append("パスワードは6文字以上で入力してください")
+
+        if not password_confirmation:
+            errors.append("パスワード確認は必須です")
+
+        if password and password_confirmation and password != password_confirmation:
             errors.append("パスワードが一致しません")
 
         if errors:
@@ -207,7 +221,9 @@ def add_child():
 @app.route('/parent/child/status/', methods=['POST'])
 def update_child_time():
     child_id = request.form.get('child_id')
-    status = request.form.get('status')
+    status = request.form.get('child_status')
+    # DBの状態を更新
+    Child.update_status(child_id, status)
     flash('子どもアカウントの状態を更新しました')
     return redirect(url_for('parent_dashboard'))
 
@@ -219,7 +235,38 @@ def delete_child():
 
 @app.route('/child/dashboard',methods=['GET'])
 def child_home():
-    return render_template('child/home.html')
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
+    child = Child.find_by_id(session['uid'])
+    return render_template('child/home.html', child=child)
+
+@app.route('/child/friends/add', methods=['GET', 'POST'])
+def add_child_friends():
+    # 仮の友だち追加画面
+    return render_template('child/friends/add.html')
+
+# ダミーデータです。ひいろが作りました。必要ないなら消してください
+# @app.route('/child/channel/1',methods=['GET'])
+# def child_channel():
+#     child_id =1
+#     friend ='田中たろう'
+#     messages = [
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':1,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':1,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':1,'message_content':'おはようございます'}
+#     ]
+#     return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)
 
 #実行処理
 if __name__ == '__main__':

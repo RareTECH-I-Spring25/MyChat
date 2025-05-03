@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
 from flask import session
-from models import db_pool, User, Child
+from models import db_pool, User, Child, Friends
 import sys
 
 logging.basicConfig(level=logging.DEBUG)
@@ -276,6 +276,19 @@ def add_child_friends():
 #         {'child_id':1,'message_content':'おはようございます'}
 #     ]
 #     return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)
+
+@app.route('/child/friends/delete', methods=['POST'])
+def delete_friends():
+    friend_id = request.form.get('friend_id')
+    if not friend_id:
+        flash('友だちIDが指定されていません')
+        return redirect(url_for('child_home'))
+    try:
+        Friends.delete(friend_id)
+        flash('友だちを削除しました')
+    except Exception as e:
+        flash(f'削除に失敗しました: {e}')
+    return redirect(url_for('child_home'))
 
 #実行処理
 if __name__ == '__main__':

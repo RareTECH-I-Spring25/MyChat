@@ -246,6 +246,28 @@ def add_child_friends():
     # 仮の友だち追加画面
     return render_template('child/friends/add.html')
 
+# ダミーデータです。ひいろが作りました。必要ないなら消してください
+# @app.route('/child/channel/1',methods=['GET'])
+# def child_channel():
+#     child_id =1
+#     friend ='田中たろう'
+#     messages = [
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':1,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':1,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':1,'message_content':'おはようございます'}
+#     ]
+#     return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)
+
 #実行処理
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

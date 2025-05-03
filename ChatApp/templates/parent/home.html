@@ -6,7 +6,9 @@
 {% block body %}
 <div class="dashboard bg-main">
 	<div class="dashboard__wrap">
+		{% with user_name=parent.parent_user_name %}
 		{% include 'header.html' %}
+		{% endwith %}
 
 		<!-- ユーザーグリーティング -->
 		<div class="dashboard__greeting">

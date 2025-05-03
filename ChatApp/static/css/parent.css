@@ -9,6 +9,7 @@
 	max-width: 480px;
 	margin: auto;
 	height: 100dvh;
+	padding-top: 70px;
 }
 
 .dashboard__wrap--parent {

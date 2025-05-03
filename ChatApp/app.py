@@ -241,6 +241,15 @@ def child_home():
     child = Child.find_by_id(session['uid'])
     return render_template('child/home.html', child=child)
 
+# ダミーデータです。ひいろが作りました。必要ないなら消してください
+# @app.route('/child/dashboard',methods=['GET'])
+# def child_home():
+#     child = {'child_user_name':'田中たろう','friend_child_user_id':'test'}
+#     friends = [
+#         {'friend_id':1,'channel_id':1,'child_user_name' : '鈴木たろう'}
+#     ]
+#     return render_template('child/home.html', child=child , friends=friends)
+
 @app.route('/child/friends/add', methods=['GET', 'POST'])
 def add_child_friends():
     # 仮の友だち追加画面

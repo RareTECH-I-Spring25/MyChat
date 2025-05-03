@@ -233,49 +233,27 @@ def delete_child():
     print(f"子どもID={child_id}")
     return redirect(url_for('parent_dashboard'))
 
+
+
+#ここからが子どもゾーンはやさん加筆修正！！
+
 @app.route('/child/dashboard',methods=['GET'])
 def child_home():
     if 'uid' not in session or session.get('user_type') != 'child':
         flash('ログインしてください')
         return redirect(url_for('login'))
     child = Child.find_by_id(session['uid'])
-    return render_template('child/home.html', child=child)
+    friends = []  # はやさんへ、データベースからfriendsを引っ張ってきてください
+    return render_template('child/home.html', child=child, friends=friends)
 
-# ダミーデータです。ひいろが作りました。必要ないなら消してください
-# @app.route('/child/dashboard',methods=['GET'])
-# def child_home():
-#     child = {'child_user_name':'田中たろう','friend_child_user_id':'test'}
-#     friends = [
-#         {'friend_id':1,'channel_id':1,'child_user_name' : '鈴木たろう'}
-#     ]
-#     return render_template('child/home.html', child=child , friends=friends)
+
 
 @app.route('/child/friends/add', methods=['GET', 'POST'])
 def add_child_friends():
     # 仮の友だち追加画面
     return render_template('child/friends/add.html')
 
-# ダミーデータです。ひいろが作りました。必要ないなら消してください
-# @app.route('/child/channel/1',methods=['GET'])
-# def child_channel():
-#     child_id =1
-#     friend ='田中たろう'
-#     messages = [
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':1,'message_content':'おはようございます'},
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':1,'message_content':'おはようございます'},
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':2,'message_content':'おはようございます'},
-#         {'child_id':1,'message_content':'おはようございます'}
-#     ]
-#     return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)
+
 
 @app.route('/child/friends/delete', methods=['POST'])
 def delete_friends():
@@ -289,6 +267,10 @@ def delete_friends():
     except Exception as e:
         flash(f'削除に失敗しました: {e}')
     return redirect(url_for('child_home'))
+
+
+
+#子どもゾーン終わり以下は実行処理なんで修正しないでください
 
 #実行処理
 if __name__ == '__main__':

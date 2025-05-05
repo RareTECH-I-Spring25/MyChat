@@ -36,8 +36,8 @@ def login():
             errors.append("正しいメールアドレス形式で入力してください")
 
         # パスワード長さチェック
-        if password and len(password) < 6:
-            errors.append("パスワードは6文字以上で入力してください")
+        if password and len(password) < 8:
+            errors.append("パスワードは8文字以上で入力してください")
 
         if errors:
             for error in errors:
@@ -108,8 +108,8 @@ def signup_parent():
             errors.append("ユーザー名は1文字以上10文字以内で入力してください")
 
         # パスワード長さチェック
-        if password and len(password) < 6:
-            errors.append("パスワードは6文字以上で入力してください")
+        if password and len(password) < 8:
+            errors.append("パスワードは8文字以上で入力してください")
 
         # パスワード一致チェック
         if password and password_confirmation and password != password_confirmation:
@@ -182,8 +182,8 @@ def add_child():
 
         if not password:
             errors.append("パスワードは必須です")
-        elif len(password) < 6:
-            errors.append("パスワードは6文字以上で入力してください")
+        elif len(password) < 8:
+            errors.append("パスワードは8文字以上で入力してください")
 
         if not password_confirmation:
             errors.append("パスワード確認は必須です")

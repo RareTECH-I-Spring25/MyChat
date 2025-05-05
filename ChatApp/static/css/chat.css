@@ -3,17 +3,13 @@
     height: 100dvh;
     overflow-y: auto;
   }
-.chatroom__container{
+.header-bg{
     position: fixed;
-    display: flex;
-    max-width:480px;
-    width: 100%;
-    align-items: center;
-    flex-direction: column;
+    top: 0;
+    height: 12px;
     background-color: var(--color-bg-main);
-    height: 122x;
-    padding-top: 12px;
-    z-index: 1000;
+    width: 100%;
+    margin: 0% auto;
 }
 .chatroom__friend-name{
     display: flex;
@@ -42,16 +38,13 @@
 }
 .chatroom__contents{
     margin: 0 auto;
-    width: 93%;
-    max-width: 480px;
     display: flex;
-    flex-direction: column;
     overflow-y: auto;
     flex: 1;
     -webkit-overflow-scrolling: touch;
     flex-direction: column-reverse;
-    padding-top: 110px;
     padding-bottom: 80px;
+    padding-top: 10px;
 }
 .chatroom__contents-friend-message{
     display: flex;
@@ -93,23 +86,28 @@
     display: flex;
     background-color: #FFFFFF;
     border-top: 1px solid #E5E7EB;
+    position: fixed;
+	left: 50%;
+	transform: translateX(-50%);
 }
-.chatroom__input-container form {
+.chatroom__input-container-form{
     display: flex;
     width: 100%;
     max-width: 480px;         
     align-items: center;
     justify-content: space-between;
 }
-.chatroom__input-container textarea{
+.chatroom__input-container-text{
     display: flex;
     margin-left: 16px;
     padding: 5px 5px;
-    width:300px;
+    width:80%;
     height: 30px;
-    font-size: 20px;
+    font-size: 17px;
+    overflow: hidden;
+    resize: none;
 }
-.chatroom__input-container button{
+.chatroom__input-container-button{
     display: flex;
     margin-left: auto;
     margin-right: 5px;

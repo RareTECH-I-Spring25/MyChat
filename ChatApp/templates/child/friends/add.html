@@ -1,11 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    えすえすが勝手に作ったファイルです消してください
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}
+<title>友だち追加
+</title>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard__child bg-main">
+    <div class="dashboard__child-wrap">
+        {% include 'header.html' %}
+
+        <div class="addfriend__action">
+            <a class="addfriend__action-button" href='/child/dashboard'>
+                <img src="{{ url_for('static',filename='img/arrow-left.webp') }}">
+            </a>
+            <p class="addfriend__action-text">友だち追加</p>
+        </div>
+        <p class="addfriend__text">
+            IDで友だちを検索して追加できます。
+        </p>
+
+        <form action="{{url_for('search_friends')}}" method="post" class="dashboard__child-add-friends">
+            <input type="text" placeholder="abc12345" name="identification_id" class="addfriend__search-text">
+            <button type="submit" class="dashboard__child-add-friends-button">
+                <img src="{{ url_for('static',filename='img/search.webp') }}" alt="送信" class="addfriend__search-icon">
+                <span class="dashboard__child-add-friends-text">検索</span>
+            </button>
+        </form>
+
+        {% if result %}
+            <div class="dashboard__child-friends-list-container">
+                <form action="{{url_for('add_friends')}}" method="post" id="send-friend">
+                    <label class="dashboard__child-friends-list-name">
+                        <input type="radio" name="child_user_name" value="{{ result }}">
+                        <span class="dashboard__child-first-letter">{{ result[0] }}</span>
+                        <span class="dashboard__child-full-name">{{ result }}</span>
+                    </label>
+                </form>
+            </div>
+        {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="flash-message flash-message--{{ category }}">
+                {{ message }}
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        {% if result %}
+        <div class="chatroom__input-container">
+            <div class="addfriend__add-container">
+                <button type="submit" form="send-friend" class="addfriend__add-botton">友だちに追加</button> 
+            </div>
+        </div> 
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -4,14 +4,19 @@
 	height: 100dvh;
   overflow-y: auto;
 }
+.dashboard__child-wrap {
+	max-width: 480px;
+  width: 93%;
+	margin: auto;
+	height: 100dvh;
+	padding-top: 70px;
+}
 .dashboard__child-greeting {
   padding-top: 38px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin: 0 auto;
-  width: 93%;
-  max-width: 480px;
 }
 .dashboard__child-greeting-name{
   color: #000;
@@ -34,8 +39,6 @@
   margin: 0 auto;
   margin-top: 29px;
   height: 40px;
-  width: 93%;
-  max-width: 480px;
 }
 .dashboard__child-add-friends h2{
   font-size: 20px;
@@ -63,28 +66,19 @@
   opacity: 0.7;
 }
 .dashboard__child-friends-list{
-  list-style-type: none; /* デフォルトのリストマーカーを削除 */
-  padding: 0; /* パディングをリセット */
+  list-style-type: none; 
+  padding: 0; 
   margin: 0;
 }
-.dashboard__child-friends-list li{
+.dashboard__child-friends-list-container{
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 72px;
-  width: 93%;
-  max-width: 480px;
   background-color: #FFFFFF;
   margin: 26px auto;
   border-radius: 12px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-}
-.dashboard__child-friends-list button {
-  border: none;
-  background: none;
-  padding: 0;
-  font: inherit; /* ボタンのフォントを親に合わせる */
-  color: inherit; /* ボタンの文字色も親に合わせる */
 }
 .dashboard__child-first-letter{
   border-radius: 50%;
@@ -99,9 +93,54 @@
   font-weight: 700;
   margin-left: 6px;
 }
-.dashboard__child-friends-list a{
+.dashboard__child-friends-list-delete{
   text-decoration: none;
   color: #000;
   font-weight: 700;
   margin-right: 16px;
-  }
+}
+.addfriend__action{
+  display: flex;
+  margin-top: 30px;
+}
+.addfriend__action-text{
+  font-size: 20px;
+  font-weight: 700;
+  padding-left: 5%;
+}
+.addfriend__text{
+  font-size: 14px;
+  color: #71717A;
+  font-weight: 400;
+  margin-top: 8px;
+}
+.addfriend__search-text{
+  color: #71717A;
+  font-size: 16px;
+  font-weight: 400;
+  border: 2px solid #D4D4D8;
+  height: 40px;
+  width: 70%;
+  border-radius: 4px;
+  background: #FFF;
+}
+.addfriend__search-icon{
+  padding-right: 10px;
+}
+.addfriend__add-container{
+  display: flex;
+  width: 100%;
+  max-width: 480px;         
+  align-items: center;
+  justify-content: flex-end;
+}
+.addfriend__add-botton{
+  font-size: 14px;
+  padding: 10px 16px;
+  border-radius: 5px;
+  color: #FFFFFF;
+  background-color: #8BA84B;
+  display: flex;
+  margin-left: auto;
+  margin-right: 16px;
+}

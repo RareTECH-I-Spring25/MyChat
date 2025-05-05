@@ -181,3 +181,9 @@
 	color: var(--color-error);
 	border: 1px solid var(--color-error);
 }
+
+.flash-message--info {
+	border-color: #8cb358;
+	background-color: #f0f0f0;
+	color: #8cb358;
+}

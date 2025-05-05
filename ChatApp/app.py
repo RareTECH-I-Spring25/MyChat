@@ -265,6 +265,63 @@ def add_child_friends():
     # 仮の友だち追加画面はやさん修正してください
     return render_template('child/friends/add.html')
 
+# ひいろがやりました。これで画面確認できます。邪魔だったら消してください
+# @app.route('/child/dashboard',methods=['GET'])
+# def child_home():
+#     if 'uid' not in session or session.get('user_type') != 'child':
+#         flash('ログインしてください')
+#         return redirect(url_for('login'))
+#     child = Child.find_by_id(session['uid'])
+#     friends = [
+#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
+#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
+#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
+#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
+#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},    
+#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1}
+#     ]  # はやさんへ、データベースからfriendsを引っ張ってきてください
+#     return render_template('child/home.html', child=child, friends=friends)
+
+
+# @app.route('/child/friends', methods=['GET'])
+# def show_friends():
+#     result = request.args.get('result')
+#     return render_template('child/friends/add.html', result = result)
+
+
+# @app.route('/child/friends/search', methods=['POST'])
+# def search_friends():
+#     result = '田中たろう'
+#     flash('すでに登録されています')
+#     return redirect(url_for('show_friends', result=result))
+
+
+# @app.route('/child/friends/add', methods=['POST'])
+# def add_friends():
+#     flash('友だちを追加しました', 'info')
+#     return redirect(url_for('show_friends'))
+
+
+# @app.route('/child/channel/1',methods=['GET'])
+# def child_channel():
+#     child_id =1
+#     friend ='田中たろう'
+#     messages = [
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':1,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':1,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':2,'message_content':'おはようございます'},
+#         {'child_id':1,'message_content':'おはようございます'}
+#     ]
+#     return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)
 
 
 @app.route('/child/friends/delete', methods=['POST'])

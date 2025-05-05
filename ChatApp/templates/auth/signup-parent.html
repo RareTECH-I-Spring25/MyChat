@@ -10,11 +10,11 @@
 		<form class="login__form" action="/signup/parent" method="post">
 			<div class="login__form-group">
 				<label for="email" class="login__label">メールアドレス</label>
-				<input type="email" id="email" name="email" class="login__input" placeholder="sample@sample.com" value="{{ email }}">
+				<input type="email" id="email" name="email" class="login__input" placeholder="sample@sample.com" value="{{ email|default('') }}">
 			</div>
 			<div class="login__form-group">
 				<label for="parent_user_name" class="login__label">ユーザー名</label>
-				<input type="test" id="parent_user_name" name="parent_user_name" class="login__input" placeholder="山田花子" value="{{ parent_user_name }}">
+				<input type="text" id="parent_user_name" name="parent_user_name" class="login__input" placeholder="山田花子" value="{{ parent_user_name|default('') }}">
 			</div>
 			<div class="login__form-group">
 				<label for="password" class="login__label">パスワード</label>

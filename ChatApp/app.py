@@ -4,6 +4,8 @@ from flask import session
 from models import db_pool, User, Child
 import sys
 
+
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -196,9 +198,7 @@ def add_child():
                 flash(error)
             return render_template('parent/child/add.html', identification_id=identification_id, child_user_name=child_user_name, email=email)
 
-        # パスワードハッシュ化
-        from werkzeug.security import generate_password_hash
-        hashed_password = generate_password_hash(password)
+
 
         # friend_child_user_idの生成（identification_idがなければuuid）
         import uuid
@@ -254,7 +254,7 @@ def child_home():
 
 @app.route('/child/friends/add', methods=['GET', 'POST'])
 def add_child_friends():
-    # 仮の友だち追加画面
+    # 仮の友だち追加画面はやさん修正してください
     return render_template('child/friends/add.html')
 
 

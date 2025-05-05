@@ -209,6 +209,8 @@ def add_child():
 
         # DB保存
         try:
+            from werkzeug.security import generate_password_hash
+            hashed_password = generate_password_hash(password)
             Child.create(child_user_name, email, hashed_password, friend_child_user_id, parent_id)
             flash('子どもアカウントを追加しました', 'info')
             return redirect(url_for('parent_dashboard'))

@@ -1,0 +1,183 @@
+@import url('/static/css/color.css');
+
+.login {
+	width: 100%;
+	padding: 0 24px;
+	background-image: url('/static/img/bg_home.webp');
+	background-size: cover;
+	background-position: center;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.login__container {
+	width: 100%;
+	max-width: 342px;
+	background-color: #fff;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login__container--parent {
+	max-width: unset;
+}
+
+.login__header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.login__logo {
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+	gap: 8px;
+}
+
+.login__logo-image {
+	width: 30px;
+}
+
+.logo__title {
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.signup__title {
+	font-size: 24px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+	display: flex;
+	justify-content: center;
+}
+
+.login__user-type {
+	display: flex;
+	width: 100%;
+	gap: 24px;
+}
+
+.login__radio-label {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	gap: 8px;
+}
+
+.login__radio-text {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 150%;
+}
+
+.login__radio-label--active {
+	color: #8cb358;
+}
+
+.login__radio {
+	margin-right: 8px;
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	border: 2px solid #ccc;
+	border-radius: 50%;
+	position: relative;
+	margin: 0;
+}
+
+.login__radio:checked {
+	border-color: #8cb358;
+}
+
+.login__radio:checked::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 8px;
+	height: 8px;
+	background-color: #8cb358;
+	border-radius: 50%;
+}
+
+.login__form {
+	margin-bottom: 12px;
+}
+
+.login__form-group {
+	margin-top: 12px;
+}
+
+.login__label {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 150%
+}
+
+.login__input {
+	width: 100%;
+	height: 40px;
+	padding: 0 10px;
+	border: 1px solid var(--color-form-border, #D4D4D8);
+	border-radius: 4px;
+	font-size: 14px;
+	margin-top: 4px;
+}
+
+.login__input--error {
+	border-color: #f76060;
+}
+
+.login__error-message {
+	color: var(--color-error);
+	font-size: 12px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+	margin-top: 4px;
+}
+
+.login__submit-btn {
+	margin-top: 24px;
+}
+
+.login__links {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+}
+
+.login__link {
+	font-size: 14px;
+}
+
+.login__link-text {
+	text-decoration: underline;
+	font-size: 14px;
+	transition: all 0.3s;
+}
+
+/* Flashメッセージのスタイル */
+.flash-messages {
+	margin-bottom: 16px;
+}
+
+.flash-message {
+	padding: 10px 15px;
+	border-radius: 4px;
+	margin-top: 12px;
+	font-size: 14px;
+	background-color: #f8f9fa;
+	background-color: #ffebee;
+	color: var(--color-error);
+	border: 1px solid var(--color-error);
+}

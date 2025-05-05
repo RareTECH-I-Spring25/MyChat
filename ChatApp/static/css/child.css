@@ -1,0 +1,107 @@
+.dashboard__child{
+  padding: 12px;
+	max-width: 100vw;
+	height: 100dvh;
+  overflow-y: auto;
+}
+.dashboard__child-greeting {
+  padding-top: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0 auto;
+  width: 93%;
+  max-width: 480px;
+}
+.dashboard__child-greeting-name{
+  color: #000;
+  font-weight: 700;
+  font-size: 20px;
+}
+.dashboard__child-greeting-id{
+  color: #000;
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-top: 4px;
+}
+.dashboard__child-add-friends{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  margin-top: 29px;
+  height: 40px;
+  width: 93%;
+  max-width: 480px;
+}
+.dashboard__child-add-friends h2{
+  font-size: 20px;
+  font-weight: 700;
+}
+.dashboard__child-add-friends-button{
+  background-color: #8BA84B;
+  height: 40px;
+  padding: 10px 16px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+}
+.dashboard__child-add-friends-icon{
+  font-size: 25px;
+  font-weight: 700;
+  padding-right: 15px;
+}
+.dashboard__child-add-friends-text{
+  font-size: 14px;
+}
+.dashboard__add-friends-button:active{
+  opacity: 0.7;
+}
+.dashboard__child-friends-list{
+  list-style-type: none; /* デフォルトのリストマーカーを削除 */
+  padding: 0; /* パディングをリセット */
+  margin: 0;
+}
+.dashboard__child-friends-list li{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  width: 93%;
+  max-width: 480px;
+  background-color: #FFFFFF;
+  margin: 26px auto;
+  border-radius: 12px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+.dashboard__child-friends-list button {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit; /* ボタンのフォントを親に合わせる */
+  color: inherit; /* ボタンの文字色も親に合わせる */
+}
+.dashboard__child-first-letter{
+  border-radius: 50%;
+  border: 1px solid #8BA84B;
+  color: #8BA84B;
+  background-color: #F1F4E5;
+  margin-left: 16px;
+  padding: 7px 10px;
+  font-weight: 700;
+  }
+.dashboard__child-full-name{
+  font-weight: 700;
+  margin-left: 6px;
+}
+.dashboard__child-friends-list a{
+  text-decoration: none;
+  color: #000;
+  font-weight: 700;
+  margin-right: 16px;
+  }

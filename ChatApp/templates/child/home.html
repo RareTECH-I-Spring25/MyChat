@@ -1,1 +1,54 @@
-<h1>えすえすが書いた実験用ですいつでも消してください</h1>
+{% extends 'base.html' %}
+{% block title %}
+<title>子どもダッシュボード?
+</title>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard__child bg-main">
+    <div class="dashboard__child-container">
+        {% include 'header.html' %}
+        <div class="dashboard__child-greeting">
+            <p class="dashboard__child-greeting-name">こんにちは、{{ child.child_user_name }}さん</p>
+            <p class="dashboard__child-greeting-id">あなたのIDは、{{ child.friend_child_user_id }}です</p>
+        </div>
+        <div class="dashboard__child-add-friends">
+            <h2>友だち</h2>
+            <!-- 子どもアカウント追加ボタン -->
+		    <a href="{{url_for('add_child_friends')}}" class="dashboard__child-add-friends-button">
+		        <span class="dashboard__child-add-friends-icon">+</span>
+			    <span class="dashboard__child-add-friends-text">友だちを追加</span>
+		    </a>
+	    </div>
+    </div>
+    <ul class="dashboard__child-friends-list">
+        {% for friend in friends %}
+        <li>
+            <a href="/child/channel/{{friend.channel_id}}" >
+                <span class="dashboard__child-first-letter">{{friend.child_user_name[0]}}</span>
+                <span class="dashboard__child-full-name">{{friend.child_user_name}}</span>
+            </a>
+            <button onclick="showDeleteConfirm({{friend.friend_id}})">•••</button>
+        </li>
+        {% endfor %}
+    </ul>
+    <!-- 　削除の確認用ポップアップ -->
+		<div id="deleteConfirm" style="display: none;" class="delete-confirm">
+			<div class="delete-confirm__content">
+			<div class="delete-confirm__header">
+				<p class="delete-confirm__title">友だちのアカウントを削除</p>
+				<button type="button" class="delete-confirm__close" onclick="hideDeleteConfirm()">×</button>
+			</div>
+			<p  class="delete-confirm__text">リストから削除しますか？削除すると、チャット履歴も削除されます。</p>
+			
+			<form id="deleteForm" action="{{url_for('delete_friends')}}" method="POST">
+				<input type="hidden" id="deleteChildId" name="friend_id" value="">
+				<div class="delete-confirm__buttons">
+					<button type="button" onclick="hideDeleteConfirm()" class="btn-cancel hover">キャンセル</button>
+					<button type="submit" class="btn-delete hover">削除</button>
+				</div>
+			</form>
+			</div>
+		</div>
+</div>
+{% endblock %}

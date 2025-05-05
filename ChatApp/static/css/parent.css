@@ -9,6 +9,7 @@
 	max-width: 480px;
 	margin: auto;
 	height: 100dvh;
+	padding-top: 70px;
 }
 
 .dashboard__wrap--parent {
@@ -16,10 +17,7 @@
 	flex-direction: column;
 	gap: 32px;
 	align-items: center;
-}
-
-.dashboard__wrap--parent .header {
-	width: 100%;
+	padding-top: 100px;
 }
 
 .login__form.login__form--parent-child {

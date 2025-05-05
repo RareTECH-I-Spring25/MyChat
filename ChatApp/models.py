@@ -206,4 +206,103 @@ class Message:
            abort(500)
        finally:
            db_pool.release(conn)
+
+
+# 子どもクラス
+class Child:
+    @classmethod
+    def create(cls, child_user_name, email, password, friend_child_user_id, parent_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = """
+                INSERT INTO children (child_user_name, child_email, password, friend_child_user_id, parent_id)
+                VALUES (%s, %s, %s, %s, %s);
+                """
+                cur.execute(sql, (child_user_name, email, password, friend_child_user_id, parent_id))
+                conn.commit()
+        except pymysql.Error as e:
+            print(f'エラーが発生しています：{e}')
+            if hasattr(e, 'args') and len(e.args) > 0 and e.args[0] == 1062:
+                # 重複エラー
+                raise ValueError('このメールアドレスまたはIDは既に登録されています')
+            abort(500)
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def find_by_email(cls, email):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "SELECT * FROM children WHERE child_email=%s;"
+                cur.execute(sql, (email,))
+                child = cur.fetchone()
+            return child
+        except pymysql.Error as e:
+            print(f'エラーが発生しています：{e}')
+            abort(500)
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def find_by_id(cls, child_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "SELECT * FROM children WHERE child_id=%s;"
+                cur.execute(sql, (child_id,))
+                child = cur.fetchone()
+            return child
+        except pymysql.Error as e:
+            print(f'エラーが発生しています：{e}')
+            abort(500)
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def update_status(cls, child_id, status):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "UPDATE children SET child_status=%s WHERE child_id=%s;"
+                cur.execute(sql, (status, child_id))
+                conn.commit()
+        except Exception as e:
+            print(f"エラー: {e}")
+            abort(500)
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def find_by_parent_id(cls, parent_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "SELECT * FROM children WHERE parent_id=%s;"
+                cur.execute(sql, (parent_id,))
+                children = cur.fetchall()
+            return children
+        except pymysql.Error as e:
+            print(f'エラーが発生しています：{e}')
+            abort(500)
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def delete(cls, child_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "DELETE FROM children WHERE child_id=%s;"
+                cur.execute(sql, (child_id,))
+                conn.commit()
+        except Exception as e:
+            print(f"エラー: {e}")
+            abort(500)
+        finally:
+            db_pool.release(conn)
+
+
+
     

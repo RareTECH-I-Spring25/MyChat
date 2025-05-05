@@ -12,6 +12,12 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.secret_key = 'your_secret_key' 
 
+
+#Cokie設定！
+app.config['SESSION_COOKIE_SECURE'] = False  #Trueにしない
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 @app.route("/")
 def index():
     return render_template("auth/login.html")

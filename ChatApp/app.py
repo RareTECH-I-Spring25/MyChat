@@ -138,13 +138,13 @@ def signup_parent():
 @app.route('/logout', methods=['POST'])
 def logout():
     session.clear()
-    flash('ログアウトしました')
+    flash('ログアウトしました', 'info')
     return redirect(url_for('login'))
 
 @app.route('/parent/dashboard', methods=['GET'])
 def parent_dashboard():
     if 'uid' not in session or session.get('user_type') != 'parent':
-        flash('ログインしてください')
+        flash('ログインしてください', 'info')
         return redirect(url_for('login'))
 
     parent = User.find_by_id(session['uid'])
@@ -210,7 +210,7 @@ def add_child():
         # DB保存
         try:
             Child.create(child_user_name, email, hashed_password, friend_child_user_id, parent_id)
-            flash('子どもアカウントを追加しました')
+            flash('子どもアカウントを追加しました', 'info')
             return redirect(url_for('parent_dashboard'))
         except Exception as e:
             flash(f'登録に失敗しました: {e}')
@@ -224,7 +224,7 @@ def update_child_time():
     status = request.form.get('child_status')
     # DBの状態を更新
     Child.update_status(child_id, status)
-    flash('子どもアカウントの状態を更新しました')
+    flash('子どもアカウントの状態を更新しました', 'info')
     return redirect(url_for('parent_dashboard'))
 
 @app.route('/parent/child/delete/', methods=['POST'])
@@ -232,7 +232,7 @@ def delete_child():
     child_id = request.form.get('child_id')
     if child_id:
         Child.delete(child_id)
-        flash('子どもアカウントを削除しました')
+        flash('子どもアカウントを削除しました', 'info')
     else:
         flash('子どもIDが指定されていません')
     return redirect(url_for('parent_dashboard'))

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key' 
-csrf = CSRFProtect(app)
+#csrf = CSRFProtect(app) htmlファイルを書き換えるまでコメントオフ
 #formタグのすぐ直下に{{ csrf_token() }}と記述
 #GETメソッドのときは不要
 #POSTメソッドのみに書く

@@ -16,7 +16,7 @@
         <div class="dashboard__child-add-friends">
             <h2>友だち</h2>
             <!-- 子どもアカウント追加ボタン -->
-		    <a href="{{url_for('show_friends')}}" class="dashboard__child-add-friends-button">
+		    <a href="{{url_for('add_friends')}}" class="dashboard__child-add-friends-button hover">
 		        <span class="dashboard__child-add-friends-icon">+</span>
 			    <span class="dashboard__child-add-friends-text">友だちを追加</span>
 		    </a>
@@ -37,11 +37,11 @@
         <ul class="dashboard__child-friends-list">
             {% for friend in friends %}
             <li class="dashboard__child-friends-list-container">
-                <a class="dashboard__child-friends-list-name" href="/child/channel/{{friend.channel_id}}" >
+                <a class="dashboard__child-friends-list-name hover" href="/child/channel/{{friend.channel_id}}" >
                     <span class="dashboard__child-first-letter">{{friend.child_user_name[0]}}</span>
                     <span class="dashboard__child-full-name">{{friend.child_user_name}}</span>
                 </a>
-                <button class="dashboard__child-friends-list-delete" onclick="showDeleteConfirm({{friend.friend_id}})">•••</button>
+                <button class="dashboard__child-friends-list-delete hover" onclick="showDeleteConfirm({{friend.friend_id}})">•••</button>
             </li>
             {% endfor %}
         </ul>

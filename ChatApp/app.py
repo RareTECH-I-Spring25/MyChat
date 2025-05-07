@@ -355,7 +355,13 @@ def delete_friends():
         flash(f'削除に失敗しました: {e}')
     return redirect(url_for('child_home'))
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('error/404.html'),404
 
+@app.errorhandler(500)
+def page_not_found(error):
+    return render_template('error/500.html'),500
 
 #子どもゾーン終わり以下は実行処理なんで修正しないでください
 

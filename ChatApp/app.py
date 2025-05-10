@@ -265,35 +265,10 @@ def child_home():
         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-        {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-        {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-        {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-        
     ]  # はやさんへ、データベースからfriendsを引っ張ってきてください
     return render_template('child/home.html', child=child, friends=friends)
 
 
-# ひいろがやりました。これで画面確認できます。邪魔だったら消してください
-# @app.route('/child/dashboard',methods=['GET'])
-# def child_home():
-#     if 'uid' not in session or session.get('user_type') != 'child':
-#         flash('ログインしてください')
-#         return redirect(url_for('login'))
-#     child = Child.find_by_id(session['uid'])
-#     friends = [
-#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},    
-#         {'channel_id':1,'child_user_name':'田中たろう','friend_id':1}
-#     ]  # はやさんへ、データベースからfriendsを引っ張ってきてください
-#     return render_template('child/home.html', child=child, friends=friends)
-
-
-# @app.route('/child/friends', methods=['GET'])
-# def show_friends():
-#     return render_template('child/friends/add.html')
 
 
 @app.route('/child/friends/search', methods=['POST'])
@@ -324,19 +299,11 @@ def child_channel():
     child_id =1
     friend ='田中たろう'
     messages = [
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':1,'message_content':'おはようございます'},
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':1,'message_content':'おはようございます'},
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':2,'message_content':'おはようございます'},
-        {'child_id':1,'message_content':'おはようございます'}
+        {'child_id':2,'message_content':'おはよう'},
+        {'child_id':1,'message_content':'今日の待ち合わせ時間12時だったっけ？'},
+        {'child_id':2,'message_content':'合ってるよ！'},
+        {'child_id':1,'message_content':'ありがとう！'},
+
     ]
     return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)
 

@@ -299,10 +299,10 @@ def child_channel():
     child_id =1
     friend ='田中たろう'
     messages = [
-        {'child_id':2,'message_content':'おはよう'},
-        {'child_id':1,'message_content':'今日の待ち合わせ時間12時だったっけ？'},
-        {'child_id':2,'message_content':'合ってるよ！'},
-        {'child_id':1,'message_content':'ありがとう！'},
+        {'child_id':1,'message_content':'おはよう'},
+        {'child_id':2,'message_content':'今日の待ち合わせ時間12時だったっけ？'},
+        {'child_id':1,'message_content':'合ってるよ！'},
+        {'child_id':2,'message_content':'ありがとう！'},
 
     ]
     return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)

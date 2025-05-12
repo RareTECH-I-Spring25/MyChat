@@ -20,6 +20,7 @@
         </p>
 
         <form action="{{url_for('search_friends')}}" method="post" class="dashboard__child-add-friends">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="text" placeholder="abc12345" name="identification_id" class="addfriend__search-text">
             <button type="submit" class="dashboard__child-add-friends-button hover">
                 <img src="{{ url_for('static',filename='img/search.webp') }}" alt="送信" class="addfriend__search-icon">
@@ -28,6 +29,7 @@
         </form>
 
 		<form action="{{url_for('add_friends')}}" method="post" id="send-friend">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 			{% if results %}
 				{% for result in results %}
 					<div class="dashboard__child-friends-list-container">

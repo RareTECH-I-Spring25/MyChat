@@ -56,6 +56,7 @@
 		    <p  class="delete-confirm__text">リストから削除しますか？削除すると、チャット履歴も削除されます。</p>
 		
 			<form id="deleteForm" action="{{url_for('delete_friends')}}" method="POST">
+				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 			    <input type="hidden" id="deleteChildId" name="friend_id" value="">
 			    <div class="delete-confirm__buttons">
 				    <button type="button" onclick="hideDeleteConfirm()" class="btn-cancel hover">キャンセル</button>

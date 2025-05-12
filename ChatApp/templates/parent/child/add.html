@@ -18,6 +18,7 @@
 				<span class="dashboard__greeting-text">子どもアカウント追加</span>
 			</div>
 			<form class="login__form login__form--parent-child" action="{{url_for('add_child')}}" method="post">
+				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 				<div class="login__form-group">
 					<label for="identification_id" class="login__label">任意のID</label>
 					<input type="test" id="identification_id" name="identification_id" class="login__input" placeholder="sample1234" value="{{ identification_id }}">

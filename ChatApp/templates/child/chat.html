@@ -33,6 +33,7 @@
     <!-- 入力フォーム -->
     <div class="chatroom__input-container">
         <form action="/child/channel/{{channel_id}}/messages" method="post" class="chatroom__input-container-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <textarea name="message" placeholder="メッセージを入力してください" required class="chatroom__input-container-text"></textarea>
             <button type="submit" class="chatroom__input-container-button">
                 <img src="{{ url_for('static',filename='img/send-message-icon.webp') }}" alt="送信">

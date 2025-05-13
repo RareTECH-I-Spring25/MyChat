@@ -7,7 +7,7 @@ from util.DB import DB
 db_pool = DB.init_db_pool()
 
 
-# ユーザークラス
+# Userクラス
 class User:
    @classmethod
    def create(cls, uid, name, email, password):
@@ -59,7 +59,7 @@ class User:
            db_pool.release(conn)
 
 
-# チャンネルクラス
+# Channelクラス
 class Channel:
    @classmethod
    def create(cls, uid, new_channel_name, new_channel_description):
@@ -208,7 +208,7 @@ class Message:
            db_pool.release(conn)
 
 
-# 子どもクラス
+# Chhildクラス
 class Child:
     @classmethod
     def create(cls, child_user_name, email, password, friend_child_user_id, parent_id):
@@ -300,6 +300,49 @@ class Child:
         except Exception as e:
             print(f"エラー: {e}")
             abort(500)
+        finally:
+            db_pool.release(conn)
+
+
+# Friendsクラス
+class Friends:
+    @classmethod
+    def create(cls, child_id, friend_child_user_id, channel_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "INSERT INTO friends (child_id, friend_child_user_id, channel_id) VALUES (%s, %s, %s);"
+                cur.execute(sql, (child_id, friend_child_user_id, channel_id))
+                conn.commit()
+        except Exception as e:
+            print(f'エラーが発生しました：{e}')
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def get_friends(cls, child_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "SELECT f.friend_id, c.child_user_name, f.channel_id FROM friends f JOIN children c ON f.friend_child_user_id = c.friend_child_user_id WHERE f.child_id = %s;"
+                cur.execute(sql, (child_id,))
+                return cur.fetchall()
+        except Exception as e:
+            print(f'エラーが発生しました：{e}')
+            return []
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def delete(cls, friend_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "DELETE FROM friends WHERE friend_id = %s;"
+                cur.execute(sql, (friend_id,))
+                conn.commit()
+        except Exception as e:
+            print(f'エラーが発生しました：{e}')
         finally:
             db_pool.release(conn)
 

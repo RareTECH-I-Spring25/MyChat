@@ -2,13 +2,10 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
 from flask import session
 from models import db_pool, User, Child
+from models import Friends
 import sys
 from flask_wtf import CSRFProtect
 
-
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key' 
@@ -253,37 +250,28 @@ def delete_child():
 
 
 
-#ここからが子どもゾーンはやさん加筆修正！！
-
+#子どものログイン処理
 @app.route('/child/dashboard',methods=['GET'])
 def child_home():
     if 'uid' not in session or session.get('user_type') != 'child':
         flash('ログインしてください')
         return redirect(url_for('login'))
     child = Child.find_by_id(session['uid'])
-    friends = []  # はやさんへ、データベースからfriendsを引っ張ってきてください
-    friends = [
-        {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-        {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-        {'channel_id':1,'child_user_name':'田中たろう','friend_id':1},
-    ]  # はやさんへ、データベースからfriendsを引っ張ってきてください
+    friends = Friends.get_friends(session['uid'])
     return render_template('child/home.html', child=child, friends=friends)
 
-
-
-
+#子どもの友達検索処理
 @app.route('/child/friends/search', methods=['POST'])
 def search_friends():
     #childrenテーブルからfriend_child_user_idで検索
     results = [
         {'child_id':1,'child_user_name':'田中たろう','friend_child_user_id':'sample1234'}
-        # {'child_id':2,'child_user_name':'田中たろう02','friend_child_user_id':'sample12345'},
 	]
     # すでに登録されている場合はflashメッセージを返す
     flash('すでに登録されています')
     return render_template('child/friends/add.html', results = results)
 
-
+#子どもの友達追加処理
 @app.route('/child/friends/add',methods=['GET', 'POST'])	
 def add_friends():
     if request.method == 'POST':
@@ -308,7 +296,7 @@ def child_channel():
     ]
     return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)
 
-
+#子ども友達削除処理
 @app.route('/child/friends/delete', methods=['POST'])
 def delete_friends():
     friend_id = request.form.get('friend_id')
@@ -323,15 +311,15 @@ def delete_friends():
         flash(f'削除に失敗しました: {e}')
     return redirect(url_for('child_home'))
 
+#エラー404
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('error/404.html'),404
 
+#エラー500
 @app.errorhandler(500)
 def page_not_found(error):
     return render_template('error/500.html'),500
-
-#子どもゾーン終わり以下は実行処理なんで修正しないでください
 
 #実行処理
 if __name__ == '__main__':

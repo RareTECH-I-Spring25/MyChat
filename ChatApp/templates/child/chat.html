@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block body %}
-<div class="chatroom bg-main">
-    <div class="dashboard__child-wrap">
+<div class="bg-main">
+    <div class="charroom__child-wrap">
         {% with user_name=friend, is_chat=True, friend=friend %}
         {% include 'header.html' %}
         {% endwith %}
@@ -31,21 +31,28 @@
         </div>
     </div>
     <!-- 入力フォーム -->
-    <div class="chatroom__input-container">
+    <div>
         <form action="/child/channel/{{channel_id}}/messages" method="post" class="chatroom__input-container-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <textarea name="message" placeholder="メッセージを入力してください" required class="chatroom__input-container-text"></textarea>
+            <textarea name="message" id="auto-grow" rows="1" placeholder="メッセージを入力してください" required class="chatroom__input-container-text"></textarea>
             <button type="submit" class="chatroom__input-container-button">
                 <img src="{{ url_for('static',filename='img/send-message-icon.webp') }}" alt="送信">
             </button>
         </form>
     </div> 
+    <script>
+        // ページの読み込み時スクロールを一番下に
+        window.onload = function(){
+            setTimeout(() => {
+            window.scrollTo(0, document.body.scrollHeight);},
+            0)
+        }
+        // テキストエリアを可変に変更
+        const textarea = document.getElementById('auto-grow');
+        textarea.addEventListener('input', () => {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+          });
+    </script>
 </div>
-<!-- JavaScriptで実装
-1 ページが一番下にスクロースされた状態で画面を表示
-2 テキストエリアで改行された際にテキストエリアを上に拡張
-3 メッセージ送信が失敗した際の表示
-4 リアルタイムでの表示
-5 メッセージ件数が多い場合どうするか（上にスクロールで表示させる）
-6 スマホでキーボードを開いた際にテキストエリアをキーボードの上に（スマホでやってみると元から出来た） -->
 {% endblock %}

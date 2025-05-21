@@ -10,7 +10,7 @@
         {% with user_name=friend, is_chat=True, friend=friend %}
         {% include 'header.html' %}
         {% endwith %}
-        <div class="header-bg"></div>
+        <div class="header-bg-main" class="header-bg"></div>
 
         <div class="chatroom__contents">
             {% for message in messages %}

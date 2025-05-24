@@ -82,9 +82,8 @@ def login():
             if not check_password_hash(hashed_password, password):
                 flash('メールアドレスまたはパスワードが違います')
                 return render_template('auth/login.html', email=email, user_type=user_type)
-            if child['child_status'] != 1:
-                flash('このアカウントは現在使用できません。保護者にご確認ください。')
-                return render_template('auth/login.html', email=email, user_type=user_type)
+            if child['child_status'] == 0:
+                return render_template('child/blocked.html')
             session['uid'] = child['child_id']
             session['user_type'] = user_type
             return redirect(url_for('child_home'))
@@ -338,16 +337,24 @@ def child_channel():
 #子ども友達削除処理
 @app.route('/child/friends/delete', methods=['POST'])
 def delete_friends():
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
+
     friend_id = request.form.get('friend_id')
     print('friend_id:', friend_id)
+    print('request.form:', request.form)
+    
     if not friend_id:
         flash('友だちIDが指定されていません')
         return redirect(url_for('child_home'))
+    
     try:
         Friends.delete(friend_id)
         flash('友だちを削除しました')
     except Exception as e:
-        flash(f'削除に失敗しました: {e}')
+        print(f'削除エラー: {e}')
+        flash(f'削除に失敗しました: {str(e)}')
     return redirect(url_for('child_home'))
 
 #エラー404

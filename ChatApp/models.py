@@ -307,15 +307,89 @@ class Child:
 # Friendsクラス
 class Friends:
     @classmethod
-    def create(cls, child_id, friend_child_user_id, channel_id):
+    def find_by_friend_child_user_id(cls, friend_child_user_id):
         conn = db_pool.get_conn()
         try:
             with conn.cursor() as cur:
-                sql = "INSERT INTO friends (child_id, friend_child_user_id, channel_id) VALUES (%s, %s, %s);"
-                cur.execute(sql, (child_id, friend_child_user_id, channel_id))
-                conn.commit()
+                sql = """
+                SELECT child_id, child_user_name, friend_child_user_id 
+                FROM children 
+                WHERE friend_child_user_id = %s;
+                """
+                cur.execute(sql, (friend_child_user_id,))
+                return cur.fetchone()
         except Exception as e:
             print(f'エラーが発生しました：{e}')
+            return None
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def is_friend_exists(cls, child_id, friend_child_user_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = """
+                SELECT f.* 
+                FROM friends f
+                JOIN children c ON f.friend_child_user_id = c.friend_child_user_id
+                WHERE f.child_id = %s AND c.friend_child_user_id = %s;
+                """
+                cur.execute(sql, (child_id, friend_child_user_id))
+                return cur.fetchone() is not None
+        except Exception as e:
+            print(f'エラーが発生しました：{e}')
+            return False
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def create_with_channel(cls, child_id, friend_child_user_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                # トランザクション開始
+                conn.begin()
+                
+                # チャンネル作成
+                sql_channel = "INSERT INTO channels () VALUES ();"
+                cur.execute(sql_channel)
+                channel_id = cur.lastrowid
+
+                # 自分の情報を取得
+                sql_get_self = "SELECT friend_child_user_id FROM children WHERE child_id = %s;"
+                cur.execute(sql_get_self, (child_id,))
+                self_info = cur.fetchone()
+
+                # 友達の情報を取得
+                sql_get_friend = "SELECT child_id FROM children WHERE friend_child_user_id = %s;"
+                cur.execute(sql_get_friend, (friend_child_user_id,))
+                friend_info = cur.fetchone()
+
+                if not self_info or not friend_info:
+                    raise Exception("ユーザー情報が見つかりません")
+
+                # 双方向の友達関係を作成
+                sql_friend1 = """
+                INSERT INTO friends (child_id, friend_child_user_id, channel_id) 
+                VALUES (%s, %s, %s);
+                """
+                cur.execute(sql_friend1, (child_id, friend_child_user_id, channel_id))
+
+                sql_friend2 = """
+                INSERT INTO friends (child_id, friend_child_user_id, channel_id) 
+                VALUES (%s, %s, %s);
+                """
+                cur.execute(sql_friend2, (friend_info['child_id'], self_info['friend_child_user_id'], channel_id))
+                
+                # トランザクションコミット
+                conn.commit()
+                return channel_id
+        except Exception as e:
+            # エラー時はロールバック
+            conn.rollback()
+            print(f'エラーが発生しました：{e}')
+            return None
         finally:
             db_pool.release(conn)
 
@@ -324,7 +398,12 @@ class Friends:
         conn = db_pool.get_conn()
         try:
             with conn.cursor() as cur:
-                sql = "SELECT f.friend_id, c.child_user_name, f.channel_id FROM friends f JOIN children c ON f.friend_child_user_id = c.friend_child_user_id WHERE f.child_id = %s;"
+                sql = """
+                SELECT f.friend_id, c.child_user_name, f.channel_id 
+                FROM friends f 
+                JOIN children c ON f.friend_child_user_id = c.friend_child_user_id 
+                WHERE f.child_id = %s;
+                """
                 cur.execute(sql, (child_id,))
                 return cur.fetchall()
         except Exception as e:
@@ -338,10 +417,33 @@ class Friends:
         conn = db_pool.get_conn()
         try:
             with conn.cursor() as cur:
-                sql = "DELETE FROM friends WHERE friend_id = %s;"
-                cur.execute(sql, (friend_id,))
+                # トランザクション開始
+                conn.begin()
+                
+                # チャンネルIDを取得
+                sql_get_channel = "SELECT channel_id FROM friends WHERE friend_id = %s;"
+                cur.execute(sql_get_channel, (friend_id,))
+                result = cur.fetchone()
+                if result:
+                    channel_id = result['channel_id']
+                    
+                    # メッセージを削除
+                    sql_delete_messages = "DELETE FROM messages WHERE channel_id = %s;"
+                    cur.execute(sql_delete_messages, (channel_id,))
+                    
+                    # 友達関係を削除（双方向）
+                    sql_delete_friends = "DELETE FROM friends WHERE channel_id = %s;"
+                    cur.execute(sql_delete_friends, (channel_id,))
+                    
+                    # チャンネルを削除
+                    sql_delete_channel = "DELETE FROM channels WHERE channel_id = %s;"
+                    cur.execute(sql_delete_channel, (channel_id,))
+                
+                # トランザクションコミット
                 conn.commit()
         except Exception as e:
+            # エラー時はロールバック
+            conn.rollback()
             print(f'エラーが発生しました：{e}')
         finally:
             db_pool.release(conn)

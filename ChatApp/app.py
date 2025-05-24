@@ -263,24 +263,63 @@ def child_home():
 #子どもの友達検索処理
 @app.route('/child/friends/search', methods=['POST'])
 def search_friends():
-    #childrenテーブルからfriend_child_user_idで検索
-    results = [
-        {'child_id':1,'child_user_name':'田中たろう','friend_child_user_id':'sample1234'}
-	]
-    # すでに登録されている場合はflashメッセージを返す
-    flash('すでに登録されています')
-    return render_template('child/friends/add.html', results = results)
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
+
+    identification_id = request.form.get('identification_id')
+    if not identification_id:
+        flash('検索IDを入力してください')
+        return render_template('child/friends/add.html')
+
+    # 自分自身のIDで検索していないかチェック
+    child = Child.find_by_id(session['uid'])
+    if child['friend_child_user_id'] == identification_id:
+        flash('自分のIDは検索できません')
+        return render_template('child/friends/add.html')
+
+    # 友達を検索
+    friend = Friends.find_by_friend_child_user_id(identification_id)
+    if not friend:
+        flash('該当する友だちが見つかりません')
+        return render_template('child/friends/add.html')
+
+    # 既に友達関係にあるかチェック
+    if Friends.is_friend_exists(session['uid'], identification_id):
+        flash('すでに友だちに追加されています')
+        return render_template('child/friends/add.html')
+
+    return render_template('child/friends/add.html', results=[friend])
 
 #子どもの友達追加処理
-@app.route('/child/friends/add',methods=['GET', 'POST'])	
+@app.route('/child/friends/add', methods=['GET', 'POST'])	
 def add_friends():
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         child_id = request.form.get('child_id')
-        print('child_id:', child_id)
-        flash('友だちを追加しました', 'info')
-        return redirect(url_for('add_friends'))
-    else:
-        return render_template('child/friends/add.html')
+        if not child_id:
+            flash('友だちを選択してください')
+            return render_template('child/friends/add.html')
+
+        # 友達の情報を取得
+        friend = Child.find_by_id(child_id)
+        if not friend:
+            flash('友だちが見つかりません')
+            return render_template('child/friends/add.html')
+
+        # チャンネル作成と友達追加
+        channel_id = Friends.create_with_channel(session['uid'], friend['friend_child_user_id'])
+        if channel_id:
+            flash('友だちを追加しました', 'info')
+            return redirect(url_for('child_home'))
+        else:
+            flash('友だちの追加に失敗しました')
+            return render_template('child/friends/add.html')
+
+    return render_template('child/friends/add.html')
 
 
 @app.route('/child/channel/1',methods=['GET'])

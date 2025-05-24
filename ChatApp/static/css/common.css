@@ -23,6 +23,18 @@ body {
 	background-color: var(--color-bg-main);
 }
 
+.bg-image {
+	width: 100%;
+	padding: 0 24px;
+	background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(/static/img/bg_home.webp);
+	background-size: cover;
+	background-position: center;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 /* ヘッダー */
 .header {
 	position: fixed;
@@ -206,4 +218,23 @@ body {
 
 .delete-confirm__close:hover {
 	color: #333;
+}
+
+.error-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.error-container__title {
+	text-align: center;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
+
+.submit-btn--error {
+	margin-top: 28px;
 }

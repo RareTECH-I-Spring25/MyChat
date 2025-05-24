@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>ログイン</title>
+{% endblock %}
+
+{% block body %}
+<div class="bg-image">
+	<div class="error-container">
+		<p class="error-container__title">ページが見つかりません</p>
+		<a class="submit-btn submit-btn--error" href="{{url_for('login')}}">ホームに戻る</a>
+	</div>
+</div>
+{% endblock %}

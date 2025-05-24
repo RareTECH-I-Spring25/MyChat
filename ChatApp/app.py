@@ -2,15 +2,24 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
 from flask import session
 from models import db_pool, User, Child
+from models import Friends
 import sys
+from flask_wtf import CSRFProtect
 
-
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key' 
+#csrf = CSRFProtect(app) htmlファイルを書き換えるまでコメントオフ
+csrf = CSRFProtect(app)
+#formタグのすぐ直下に<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">と記述
+#GETメソッドのときは不要
+#POSTメソッドのみに書く
+
+
+#Cokie設定！
+app.config['SESSION_COOKIE_SECURE'] = False  #Trueにしない
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 @app.route("/")
 def index():
@@ -73,9 +82,8 @@ def login():
             if not check_password_hash(hashed_password, password):
                 flash('メールアドレスまたはパスワードが違います')
                 return render_template('auth/login.html', email=email, user_type=user_type)
-            if child['child_status'] != 1:
-                flash('このアカウントは現在使用できません。保護者にご確認ください。')
-                return render_template('auth/login.html', email=email, user_type=user_type)
+            if child['child_status'] == 0:
+                return render_template('child/blocked.html')
             session['uid'] = child['child_id']
             session['user_type'] = user_type
             return redirect(url_for('child_home'))
@@ -241,42 +249,123 @@ def delete_child():
 
 
 
-#ここからが子どもゾーンはやさん加筆修正！！
-
+#子どものログイン処理
 @app.route('/child/dashboard',methods=['GET'])
 def child_home():
     if 'uid' not in session or session.get('user_type') != 'child':
         flash('ログインしてください')
         return redirect(url_for('login'))
     child = Child.find_by_id(session['uid'])
-    friends = []  # はやさんへ、データベースからfriendsを引っ張ってきてください
+    friends = Friends.get_friends(session['uid'])
     return render_template('child/home.html', child=child, friends=friends)
 
+#子どもの友達検索処理
+@app.route('/child/friends/search', methods=['POST'])
+def search_friends():
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
 
+    identification_id = request.form.get('identification_id')
+    if not identification_id:
+        flash('検索IDを入力してください')
+        return render_template('child/friends/add.html')
 
-@app.route('/child/friends/add', methods=['GET', 'POST'])
-def add_child_friends():
-    # 仮の友だち追加画面はやさん修正してください
+    # 自分自身のIDで検索していないかチェック
+    child = Child.find_by_id(session['uid'])
+    if child['friend_child_user_id'] == identification_id:
+        flash('自分のIDは検索できません')
+        return render_template('child/friends/add.html')
+
+    # 友達を検索
+    friend = Friends.find_by_friend_child_user_id(identification_id)
+    if not friend:
+        flash('該当する友だちが見つかりません')
+        return render_template('child/friends/add.html')
+
+    # 既に友達関係にあるかチェック
+    if Friends.is_friend_exists(session['uid'], identification_id):
+        flash('すでに友だちに追加されています')
+        return render_template('child/friends/add.html')
+
+    return render_template('child/friends/add.html', results=[friend])
+
+#子どもの友達追加処理
+@app.route('/child/friends/add', methods=['GET', 'POST'])	
+def add_friends():
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        child_id = request.form.get('child_id')
+        if not child_id:
+            flash('友だちを選択してください')
+            return render_template('child/friends/add.html')
+
+        # 友達の情報を取得
+        friend = Child.find_by_id(child_id)
+        if not friend:
+            flash('友だちが見つかりません')
+            return render_template('child/friends/add.html')
+
+        # チャンネル作成と友達追加
+        channel_id = Friends.create_with_channel(session['uid'], friend['friend_child_user_id'])
+        if channel_id:
+            flash('友だちを追加しました', 'info')
+            return redirect(url_for('child_home'))
+        else:
+            flash('友だちの追加に失敗しました')
+            return render_template('child/friends/add.html')
+
     return render_template('child/friends/add.html')
 
 
+@app.route('/child/channel/1',methods=['GET'])
+def child_channel():
+    child_id =1
+    friend ='田中たろう'
+    messages = [
+        {'child_id':1,'message_content':'おはよう'},
+        {'child_id':2,'message_content':'今日の待ち合わせ時間12時だったっけ？'},
+        {'child_id':1,'message_content':'合ってるよ！'},
+        {'child_id':2,'message_content':'ありがとう！'},
 
+    ]
+    return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)
+
+#子ども友達削除処理
 @app.route('/child/friends/delete', methods=['POST'])
 def delete_friends():
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
+
     friend_id = request.form.get('friend_id')
+    print('friend_id:', friend_id)
+    print('request.form:', request.form)
+    
     if not friend_id:
         flash('友だちIDが指定されていません')
         return redirect(url_for('child_home'))
+    
     try:
         Friends.delete(friend_id)
         flash('友だちを削除しました')
     except Exception as e:
-        flash(f'削除に失敗しました: {e}')
+        print(f'削除エラー: {e}')
+        flash(f'削除に失敗しました: {str(e)}')
     return redirect(url_for('child_home'))
 
+#エラー404
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('error/404.html'),404
 
-
-#子どもゾーン終わり以下は実行処理なんで修正しないでください
+#エラー500
+@app.errorhandler(500)
+def page_not_found(error):
+    return render_template('error/500.html'),500
 
 #実行処理
 if __name__ == '__main__':

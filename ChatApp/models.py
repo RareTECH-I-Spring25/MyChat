@@ -157,12 +157,12 @@ class Channel:
 # メッセージクラス
 class Message:
    @classmethod
-   def create(cls, uid, cid, message):
+   def create(cls, child_id, channel_id, message_content):
        conn = db_pool.get_conn()
        try:
            with conn.cursor() as cur:
-               sql = "INSERT INTO messages(uid, cid, message) VALUES(%s, %s, %s)"
-               cur.execute(sql, (uid, cid, message,))
+               sql = "INSERT INTO messages(child_id, channel_id, message_content) VALUES(%s, %s, %s)"
+               cur.execute(sql, (child_id, channel_id, message_content,))
                conn.commit()
        except pymysql.Error as e:
            print(f'エラーが発生しています：{e}')
@@ -204,6 +204,27 @@ class Message:
        except pymysql.Error as e:
            print(f'エラーが発生しています：{e}')
            abort(500)
+       finally:
+           db_pool.release(conn)
+
+
+   @classmethod
+   def get_channel_messages(cls, channel_id):
+       conn = db_pool.get_conn()
+       try:
+           with conn.cursor() as cur:
+               sql = """
+               SELECT m.*, c.child_user_name as sender_name
+               FROM messages m
+               JOIN children c ON m.child_id = c.child_id
+               WHERE m.channel_id = %s
+               ORDER BY m.create_at ASC;
+               """
+               cur.execute(sql, (channel_id,))
+               return cur.fetchall()
+       except Exception as e:
+           print(f'エラーが発生しました：{e}')
+           return []
        finally:
            db_pool.release(conn)
 
@@ -445,6 +466,78 @@ class Friends:
             # エラー時はロールバック
             conn.rollback()
             print(f'エラーが発生しました：{e}')
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def get_friend_by_id(cls, friend_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = """
+                SELECT f.*, c.child_user_name 
+                FROM friends f
+                JOIN children c ON f.friend_child_user_id = c.friend_child_user_id
+                WHERE f.friend_id = %s;
+                """
+                cur.execute(sql, (friend_id,))
+                return cur.fetchone()
+        except Exception as e:
+            print(f'エラーが発生しました：{e}')
+            return None
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def get_channel_id(cls, child_id, friend_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = """
+                SELECT f.channel_id 
+                FROM friends f
+                WHERE f.child_id = %s AND f.friend_id = %s;
+                """
+                cur.execute(sql, (child_id, friend_id))
+                return cur.fetchone()
+        except Exception as e:
+            print(f'エラーが発生しました：{e}')
+            return None
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def get_channel_by_id(cls, channel_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = "SELECT * FROM channels WHERE channel_id = %s;"
+                cur.execute(sql, (channel_id,))
+                channel = cur.fetchone()
+                return channel
+        except pymysql.Error as e:
+            print(f'エラーが発生しています：{e}')
+            abort(500)
+        finally:
+            db_pool.release(conn)
+
+    @classmethod
+    def get_friend_by_channel(cls, channel_id, child_id):
+        conn = db_pool.get_conn()
+        try:
+            with conn.cursor() as cur:
+                sql = """
+                    SELECT c.* 
+                    FROM children c
+                    INNER JOIN friends f ON c.child_id = f.friend_id
+                    WHERE f.channel_id = %s AND f.child_id != %s;
+                """
+                cur.execute(sql, (channel_id, child_id))
+                friend = cur.fetchone()
+                return friend
+        except pymysql.Error as e:
+            print(f'エラーが発生しています：{e}')
+            abort(500)
         finally:
             db_pool.release(conn)
 

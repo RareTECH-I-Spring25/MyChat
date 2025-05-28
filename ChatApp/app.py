@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 import logging
 from flask import session
 from models import db_pool, User, Child
-from models import Friends
+from models import Friends, Message
 import sys
 from flask_wtf import CSRFProtect
 
@@ -321,18 +321,51 @@ def add_friends():
     return render_template('child/friends/add.html')
 
 
-@app.route('/child/channel/1',methods=['GET'])
-def child_channel():
-    child_id =1
-    friend ='田中たろう'
-    messages = [
-        {'child_id':1,'message_content':'おはよう'},
-        {'child_id':2,'message_content':'今日の待ち合わせ時間12時だったっけ？'},
-        {'child_id':1,'message_content':'合ってるよ！'},
-        {'child_id':2,'message_content':'ありがとう！'},
+@app.route('/child/channel/<int:channel_id>', methods=['GET'])
+def child_channel(channel_id):
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
 
-    ]
-    return render_template('child/chat.html',child_id=child_id,friend=friend,messages=messages)
+    # チャンネルの情報を取得
+    channel = Friends.get_channel_by_id(channel_id)
+    if not channel:
+        flash('チャットチャンネルが見つかりません')
+        return redirect(url_for('child_home'))
+
+    # 友達情報を取得
+    friend = Friends.get_friend_by_channel(channel_id, session['uid'])
+    if not friend:
+        flash('友達情報が見つかりません')
+        return redirect(url_for('child_home'))
+
+    # メッセージを取得
+    messages = Message.get_channel_messages(channel_id)
+    
+    return render_template('child/chat.html', 
+                         child_id=session['uid'],
+                         friend=friend['child_user_name'],
+                         channel_id=channel_id,
+                         messages=messages)
+
+@app.route('/child/channel/<int:channel_id>/messages', methods=['POST'])
+def send_chat_message(channel_id):
+    if 'uid' not in session or session.get('user_type') != 'child':
+        flash('ログインしてください')
+        return redirect(url_for('login'))
+
+    message = request.form.get('message')
+    if not message:
+        flash('メッセージを入力してください')
+        return redirect(url_for('child_channel', channel_id=channel_id))
+
+    try:
+        Message.create(session['uid'], channel_id, message)
+        flash('メッセージを送信しました')
+    except Exception as e:
+        flash(f'メッセージの送信に失敗しました: {e}')
+
+    return redirect(url_for('child_channel', channel_id=channel_id))
 
 #子ども友達削除処理
 @app.route('/child/friends/delete', methods=['POST'])

@@ -44,11 +44,11 @@ CREATE TABLE friends (
 -- messagesテーブルの作成
 CREATE TABLE messages (
   message_id INT AUTO_INCREMENT PRIMARY KEY,
-  sender_id INT NOT NULL,
+  child_id INT NOT NULL,
   channel_id INT NOT NULL,
   message_content text NOT NULL,
   create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY(sender_id) REFERENCES children(child_id) ON DELETE CASCADE,
+  FOREIGN KEY(child_id) REFERENCES children(child_id) ON DELETE CASCADE,
   FOREIGN KEY(channel_id) REFERENCES channels(channel_id) ON DELETE CASCADE
 );

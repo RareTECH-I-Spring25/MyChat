@@ -136,7 +136,7 @@ def signup_parent():
             uid = str(uuid.uuid4())
             hashed_password = generate_password_hash(password)
             User.create(uid, parent_user_name, email, hashed_password)
-            flash('アカウント登録が完了しました。ログインしてください。')
+            flash('アカウント登録が完了しました。ログインしてください。', 'info')
             return redirect(url_for('login'))
         except ValueError as ve:
             flash(str(ve))

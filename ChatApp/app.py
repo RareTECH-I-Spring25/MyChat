@@ -136,7 +136,7 @@ def signup_parent():
             uid = str(uuid.uuid4())
             hashed_password = generate_password_hash(password)
             User.create(uid, parent_user_name, email, hashed_password)
-            flash('アカウント登録が完了しました。ログインしてください。')
+            flash('アカウント登録が完了しました。ログインしてください。', 'info')
             return redirect(url_for('login'))
         except ValueError as ve:
             flash(str(ve))
@@ -361,7 +361,6 @@ def send_chat_message(channel_id):
 
     try:
         Message.create(session['uid'], channel_id, message)
-        flash('メッセージを送信しました')
     except Exception as e:
         flash(f'メッセージの送信に失敗しました: {e}')
 

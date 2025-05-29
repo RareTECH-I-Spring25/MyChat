@@ -529,7 +529,7 @@ class Friends:
                 sql = """
                     SELECT c.* 
                     FROM children c
-                    INNER JOIN friends f ON c.child_id = f.friend_id
+                    INNER JOIN friends f ON c.child_id = f.child_id
                     WHERE f.channel_id = %s AND f.child_id != %s;
                 """
                 cur.execute(sql, (channel_id, child_id))

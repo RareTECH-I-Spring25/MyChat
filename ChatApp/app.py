@@ -361,7 +361,6 @@ def send_chat_message(channel_id):
 
     try:
         Message.create(session['uid'], channel_id, message)
-        flash('メッセージを送信しました')
     except Exception as e:
         flash(f'メッセージの送信に失敗しました: {e}')
 
